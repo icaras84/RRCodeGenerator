@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="road-runner-core-0.5.6">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/road-runner-core-0.5.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

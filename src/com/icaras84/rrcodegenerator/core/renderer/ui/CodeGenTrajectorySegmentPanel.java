@@ -1,0 +1,259 @@
+package com.icaras84.rrcodegenerator.core.renderer.ui;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
+import com.icaras84.rrcodegenerator.core.roadrunnerqscore.trajectorysequence.TrajectorySequenceBuilder;
+import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
+import com.icaras84.rrcodegenerator.core.utils.DocumentChangeListener;
+
+import javax.swing.*;
+import javax.swing.text.NumberFormatter;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.text.NumberFormat;
+
+public class CodeGenTrajectorySegmentPanel extends JPanel {
+
+    public final int WIDTH = 300, HEIGHT = 300;
+
+    private CodeGenTrajectoryPanel parentPanel;
+
+    private TrajectoryOperation trajectoryOp;
+
+    private JComboBox<TrajectoryOperation.TRAJECTORY_TYPE> trajectoryTypeSelector;
+    private TrajectoryOperation.TRAJECTORY_TYPE trajType;
+
+    private RobotProperties robotProp;
+
+    private JCheckBox usingPoseVariable;
+    private boolean useVariable;
+    private JFormattedTextField poseX, poseY, poseHeading;
+    private JTextField varReference;
+    private double endX, endY, endPoseHeading;
+    private String poseVariableName;
+
+    private JFormattedTextField splineTangentTextBox;
+    private JCheckBox linkPose;
+    private boolean isUsingTangent, isLinkedToPose;
+    private double tangent;
+
+    private JCheckBox usingMotionConstraintsBox;
+    private boolean useConstraint;
+    private boolean useConstraintRef;
+    private JFormattedTextField velMax, accelMax;
+    private double nVelMax, nAccelMax;
+    private String velConstraintStr, accelConstraintStr;
+
+    public CodeGenTrajectorySegmentPanel(CodeGenTrajectoryPanel parentPanel, RobotProperties robotProp){
+        super();
+        this.setLayout(new GridBagLayout());
+        this.robotProp = robotProp;
+        this.parentPanel = parentPanel;
+        this.setSize(WIDTH, HEIGHT);
+        this.setMinimumSize(getSize());
+        this.setMaximumSize(getSize());
+        init();
+    }
+
+    private void init(){
+        createAllUI();
+        arrangeAllUI();
+    }
+
+    private void createAllUI(){
+        //create all the UI components for this end pose editor
+        createTrajectoryTypeSelector();
+        createPoseEditor();
+        createSplineHeadingEditor();
+        createConstraintEditor();
+    }
+
+    private void arrangeAllUI(){
+        //arrange all the UI components
+    }
+
+    private void createTrajectoryTypeSelector() {
+        trajType = TrajectoryOperation.TRAJECTORY_TYPE.lineTo;
+        this.trajectoryOp = new TrajectoryOperation(trajType);
+
+        this.trajectoryTypeSelector = new JComboBox<>(
+                TrajectoryOperation.TRAJECTORY_TYPE.values()
+        );
+
+        trajectoryTypeSelector.setFocusable(false);
+
+
+        this.trajectoryTypeSelector.addItemListener(e -> {
+            if (e.getItem() instanceof TrajectoryOperation.TRAJECTORY_TYPE){
+                trajType = (TrajectoryOperation.TRAJECTORY_TYPE) e.getItem();
+                trajectoryOp.setTrajectoryType(trajType);
+
+                switch (trajType){
+                    case splineTo:
+                    case splineToConstantHeading:
+                    case splineToLinearHeading:
+                    case splineToSplineHeading:
+                        splineTangentTextBox.setEnabled(true);
+                        isUsingTangent = true;
+                        break;
+                    case lineTo:
+                    case lineToConstantHeading:
+                    case lineToLinearHeading:
+                    case lineToSplineHeading:
+                        splineTangentTextBox.setEnabled(false);
+                        isUsingTangent = false;
+                        break;
+                }
+            }
+        });
+    }
+
+    private void createPoseEditor(){
+        //Set up formatting
+        NumberFormat realNumFormat = NumberFormat.getIntegerInstance();
+        realNumFormat.setMaximumFractionDigits(4);
+        NumberFormatter realNumberFormatter = new NumberFormatter(realNumFormat);
+        realNumberFormatter.setValueClass(Double.class);
+        realNumberFormatter.setAllowsInvalid(false); //say 'no' to letters
+
+        poseX = new JFormattedTextField(realNumberFormatter);
+
+        poseY = new JFormattedTextField(realNumberFormatter);
+
+        poseHeading = new JFormattedTextField(realNumberFormatter);
+
+        poseX.getDocument().addDocumentListener((DocumentChangeListener) e -> endX = Double.parseDouble(poseX.getText()));
+
+        poseY.getDocument().addDocumentListener((DocumentChangeListener) e -> endY = Double.parseDouble(poseY.getText()));
+
+        poseHeading.getDocument().addDocumentListener((DocumentChangeListener) e -> endPoseHeading = Double.parseDouble(poseHeading.getText()));
+
+        varReference = new JTextField();
+        varReference.getDocument().addDocumentListener((DocumentChangeListener) e -> poseVariableName = varReference.getText());
+
+        //edit pose
+        usingPoseVariable = new JCheckBox("Use existing pose variable");
+        usingPoseVariable.setFocusable(false);
+        usingPoseVariable.addItemListener(e -> {
+            useVariable = e.getStateChange() == ItemEvent.SELECTED;
+
+            poseX.setEnabled(!useVariable);
+            poseY.setEnabled(!useVariable);
+            poseHeading.setEnabled(!useVariable);
+            varReference.setEnabled(useVariable);
+        });
+    }
+
+    private void createSplineHeadingEditor(){
+        //Set up formatting
+        NumberFormat realNumFormat = NumberFormat.getIntegerInstance();
+        realNumFormat.setMaximumFractionDigits(4);
+        NumberFormatter realNumberFormatter = new NumberFormatter(realNumFormat);
+        realNumberFormatter.setValueClass(Double.class);
+        realNumberFormatter.setAllowsInvalid(false); //say 'no' to letters
+
+        splineTangentTextBox = new JFormattedTextField(realNumberFormatter);
+        splineTangentTextBox.getDocument().addDocumentListener((DocumentChangeListener) e -> tangent = Double.parseDouble(splineTangentTextBox.getText()));
+
+        linkPose = new JCheckBox("Use pose heading");
+        linkPose.addItemListener(e -> isLinkedToPose = e.getStateChange() == ItemEvent.SELECTED);
+    }
+
+    private void createConstraintEditor(){
+        //Set up formatting
+        NumberFormat realNumFormat = NumberFormat.getIntegerInstance();
+        realNumFormat.setMaximumFractionDigits(4);
+        NumberFormatter realNumberFormatterNonNegative = new NumberFormatter(realNumFormat);
+        realNumberFormatterNonNegative.setValueClass(Double.class);
+        realNumberFormatterNonNegative.setAllowsInvalid(false); //say 'no' to letters
+        realNumberFormatterNonNegative.setMinimum(0.0d);
+
+        velMax = new JFormattedTextField(realNumberFormatterNonNegative);
+        velMax.setEnabled(useConstraint);
+        velMax.getDocument().addDocumentListener((DocumentChangeListener) e -> nVelMax = Double.parseDouble(velMax.getText()));
+
+        accelMax = new JFormattedTextField(realNumberFormatterNonNegative);
+        accelMax.setEnabled(useConstraint);
+        accelMax.getDocument().addDocumentListener((DocumentChangeListener) e -> nAccelMax = Double.parseDouble(accelMax.getText()));
+
+        //edit constraints
+        usingMotionConstraintsBox = new JCheckBox("Use Velocity & Acceleration Constraint");
+        usingMotionConstraintsBox.setFocusable(false);
+        usingMotionConstraintsBox.addItemListener(e -> {
+            useConstraint = e.getStateChange() == ItemEvent.SELECTED;
+
+            velMax.setEnabled(useConstraint);
+            accelMax.setEnabled(useConstraint);
+        });
+    }
+
+    public String generate(){
+        if (useVariable){
+            trajectoryOp.mapEndPos(poseVariableName + ".vec()");
+            trajectoryOp.mapEndPose(poseVariableName);
+        } else {
+            trajectoryOp.mapEndPos(String.format("new Vector2d(%f, %f)", endX, endY));
+            trajectoryOp.mapEndPose(String.format("new Pose2d(%f, %f, %f)", endX, endY, endPoseHeading));
+        }
+
+        if (isUsingTangent){
+            if (isLinkedToPose){
+                trajectoryOp.mapParameter(TrajectoryOperation.COMMON_PARAMS.END_HEADING, String.valueOf(endPoseHeading));
+            } else {
+                trajectoryOp.mapParameter(TrajectoryOperation.COMMON_PARAMS.END_HEADING, String.valueOf(tangent));
+            }
+        }
+
+        trajectoryOp.setUseVelAndAccelConstraints(useConstraint);
+        if (useConstraint){
+            if (useConstraintRef){
+                trajectoryOp.mapMaxVelAndAccel(velConstraintStr, accelConstraintStr);
+            } else {
+                trajectoryOp.mapMaxVelAndAccel(
+                        robotProp.getMaxVelConstraintStringFilled(nVelMax),
+                        String.format(robotProp.getMaxAccelConstraintString(), nAccelMax)
+                );
+            }
+        }
+
+        return trajectoryOp.generate();
+    }
+
+    public void delete(){
+        parentPanel.requestDelete(this);
+    }
+
+    public TrajectoryOperation getTrajectoryOp(){
+        return this.trajectoryOp;
+    }
+
+    public void insertSegmentIntoBuilder(TrajectorySequenceBuilder builder){
+        switch (trajType){
+            case lineTo:
+                builder.lineTo(new Vector2d(endX, endY));
+                break;
+            case lineToConstantHeading:
+                builder.lineToConstantHeading(new Vector2d(endX, endY));
+                break;
+            case lineToLinearHeading:
+                builder.lineToLinearHeading(new Pose2d(endX, endY, endPoseHeading));
+                break;
+            case lineToSplineHeading:
+                builder.lineToSplineHeading(new Pose2d(endX, endY, endPoseHeading));
+                break;
+            case splineTo:
+                builder.splineTo(new Vector2d(endX, endY), tangent);
+                break;
+            case splineToConstantHeading:
+                builder.splineToConstantHeading(new Vector2d(endX, endY), tangent);
+                break;
+            case splineToLinearHeading:
+                builder.splineToLinearHeading(new Pose2d(endX, endY, endPoseHeading), tangent);
+                break;
+            case splineToSplineHeading:
+                builder.splineToSplineHeading(new Pose2d(endX, endY, endPoseHeading), tangent);
+                break;
+        }
+    }
+}
