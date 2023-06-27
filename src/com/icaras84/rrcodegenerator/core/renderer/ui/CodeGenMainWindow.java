@@ -80,7 +80,7 @@ public class CodeGenMainWindow {
         CodeGenSideBar.createUI();
 
         mergedPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, CodeGenSideBar.getRootPanel(), CodeGenCanvasPanel.getRootPanel());
-        mergedPanel.setResizeWeight(3/8d);
+        mergedPanel.setResizeWeight(5/8d);
 
         //mainPanel.add(CodeGenToolBar.getRootPanel(), BorderLayout.NORTH);
         mainPanel.add(mergedPanel, BorderLayout.CENTER);

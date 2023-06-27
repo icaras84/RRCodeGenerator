@@ -37,6 +37,7 @@ public class CodeGenCanvasPanel {
 
         mainPanel.addTab("Canvas", canvasPanel);
         mainPanel.addTab("Generator Output", generationOutputPanel);
+        mainPanel.setMinimumSize(new Dimension((int) (3/8d * CodeGenMainWindow.windowSize.width), CodeGenMainWindow.windowSize.height));
     }
 
     private static void createCanvasPanel(){
@@ -77,7 +78,6 @@ public class CodeGenCanvasPanel {
         outputPreviewScrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         outputPreviewScrollPane.setSize(mainPanel.getWidth(), mainPanel.getHeight() - outputOptions.getHeight());
         outputPreviewScrollPane.setViewportView(outputPreview);
-        outputPreviewScrollPane.setBackground(Color.ORANGE);
         outputPreviewScrollPane.setVisible(true);
 
         generationOutputPanel.add(outputOptions, BorderLayout.NORTH);
@@ -123,6 +123,7 @@ public class CodeGenCanvasPanel {
     public static void resize(int width, int height){
         mainPanel.setSize(width, height);
         mainPanel.setPreferredSize(mainPanel.getSize());
+        mainPanel.setMinimumSize(new Dimension((int) (3/8d * CodeGenMainWindow.windowSize.width), CodeGenMainWindow.windowSize.height));
 
         canvasPanel.setSize(mainPanel.getSize());
         generationOutputPanel.setSize(mainPanel.getSize());
@@ -131,7 +132,7 @@ public class CodeGenCanvasPanel {
         canvas.setSize(square, square);
         canvas.setPreferredSize(canvas.getSize());
 
-        outputOptions.setSize(mainPanel.getWidth(), CodeGenToolBar.TOOLBAR_HEIGHT);
+        outputOptions.setSize(mainPanel.getWidth(), CodeGenMainWindow.windowSize.height);
         outputPreviewScrollPane.setSize(mainPanel.getWidth(), mainPanel.getHeight() - outputOptions.getHeight());
     }
 }

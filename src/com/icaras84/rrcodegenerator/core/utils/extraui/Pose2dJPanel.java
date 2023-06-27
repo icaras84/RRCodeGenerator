@@ -90,6 +90,7 @@ public class Pose2dJPanel extends JPanel{
         add(headingLabel, constraints);
 
         constraints.gridx = 1; //TextBox positioning
+        constraints.fill = GridBagConstraints.BOTH;
         constraints.gridwidth = 15;
         constraints.gridy = 1;
         add(xTextBox, constraints);

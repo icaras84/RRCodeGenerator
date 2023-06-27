@@ -23,7 +23,7 @@ public class CodeGenSideBar {
         createNavPanel();
 
         mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPanel, editorPanel);
-        mainPanel.setResizeWeight(1/2d);
+        mainPanel.setResizeWeight(3/8d);
 
         mainPanel.addComponentListener(new ComponentAdapter() {
             @Override
