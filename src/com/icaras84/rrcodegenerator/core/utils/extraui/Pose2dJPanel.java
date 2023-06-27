@@ -105,17 +105,14 @@ public class Pose2dJPanel extends JPanel{
 
     private void retrieveX(PropertyChangeEvent e){
         poseX = ((Number) xTextBox.getValue()).doubleValue();
-        System.out.println(this);
     }
 
     private void retrieveY(PropertyChangeEvent e){
         poseY = ((Number) yTextBox.getValue()).doubleValue();
-        System.out.println(this);
     }
 
     private void retrieveHeading(PropertyChangeEvent e){
         poseHeading = ((Number) headingTextBox.getValue()).doubleValue();
-        System.out.println(this);
     }
 
     public String toString(){

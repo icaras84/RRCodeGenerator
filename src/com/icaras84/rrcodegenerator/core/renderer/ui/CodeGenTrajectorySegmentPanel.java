@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
 import com.icaras84.rrcodegenerator.core.roadrunnerqscore.trajectorysequence.TrajectorySequenceBuilder;
 import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
-import com.icaras84.rrcodegenerator.core.utils.DocumentChangeListener;
+import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -26,12 +26,7 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
 
     private RobotProperties robotProp;
 
-    private JCheckBox usingPoseVariable;
-    private boolean useVariable;
-    private JFormattedTextField poseX, poseY, poseHeading;
-    private JTextField varReference;
-    private double endX, endY, endPoseHeading;
-    private String poseVariableName;
+    private Pose2dJPanel endPoseEditor;
 
     private JFormattedTextField splineTangentTextBox;
     private JCheckBox linkPose;
@@ -110,51 +105,20 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
     }
 
     private void createPoseEditor(){
-        //Set up formatting
-        NumberFormat realNumFormat = NumberFormat.getIntegerInstance();
-        realNumFormat.setMaximumFractionDigits(4);
-        NumberFormatter realNumberFormatter = new NumberFormatter(realNumFormat);
-        realNumberFormatter.setValueClass(Double.class);
-        realNumberFormatter.setAllowsInvalid(false); //say 'no' to letters
-
-        poseX = new JFormattedTextField(realNumberFormatter);
-
-        poseY = new JFormattedTextField(realNumberFormatter);
-
-        poseHeading = new JFormattedTextField(realNumberFormatter);
-
-        poseX.getDocument().addDocumentListener((DocumentChangeListener) e -> endX = Double.parseDouble(poseX.getText()));
-
-        poseY.getDocument().addDocumentListener((DocumentChangeListener) e -> endY = Double.parseDouble(poseY.getText()));
-
-        poseHeading.getDocument().addDocumentListener((DocumentChangeListener) e -> endPoseHeading = Double.parseDouble(poseHeading.getText()));
-
-        varReference = new JTextField();
-        varReference.getDocument().addDocumentListener((DocumentChangeListener) e -> poseVariableName = varReference.getText());
-
-        //edit pose
-        usingPoseVariable = new JCheckBox("Use existing pose variable");
-        usingPoseVariable.setFocusable(false);
-        usingPoseVariable.addItemListener(e -> {
-            useVariable = e.getStateChange() == ItemEvent.SELECTED;
-
-            poseX.setEnabled(!useVariable);
-            poseY.setEnabled(!useVariable);
-            poseHeading.setEnabled(!useVariable);
-            varReference.setEnabled(useVariable);
-        });
+        endPoseEditor = new Pose2dJPanel();
     }
 
     private void createSplineHeadingEditor(){
         //Set up formatting
-        NumberFormat realNumFormat = NumberFormat.getIntegerInstance();
+        NumberFormat realNumFormat = NumberFormat.getNumberInstance();
         realNumFormat.setMaximumFractionDigits(4);
         NumberFormatter realNumberFormatter = new NumberFormatter(realNumFormat);
         realNumberFormatter.setValueClass(Double.class);
-        realNumberFormatter.setAllowsInvalid(false); //say 'no' to letters
+        realNumberFormatter.setAllowsInvalid(true);
+        realNumberFormatter.setCommitsOnValidEdit(true);
 
         splineTangentTextBox = new JFormattedTextField(realNumberFormatter);
-        splineTangentTextBox.getDocument().addDocumentListener((DocumentChangeListener) e -> tangent = Double.parseDouble(splineTangentTextBox.getText()));
+        splineTangentTextBox.addPropertyChangeListener("value", e -> tangent = Double.parseDouble(splineTangentTextBox.getText()));
 
         linkPose = new JCheckBox("Use pose heading");
         linkPose.addItemListener(e -> isLinkedToPose = e.getStateChange() == ItemEvent.SELECTED);
@@ -162,20 +126,21 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
 
     private void createConstraintEditor(){
         //Set up formatting
-        NumberFormat realNumFormat = NumberFormat.getIntegerInstance();
+        NumberFormat realNumFormat = NumberFormat.getNumberInstance();
         realNumFormat.setMaximumFractionDigits(4);
         NumberFormatter realNumberFormatterNonNegative = new NumberFormatter(realNumFormat);
         realNumberFormatterNonNegative.setValueClass(Double.class);
-        realNumberFormatterNonNegative.setAllowsInvalid(false); //say 'no' to letters
+        realNumberFormatterNonNegative.setAllowsInvalid(true);
+        realNumberFormatterNonNegative.setCommitsOnValidEdit(true);
         realNumberFormatterNonNegative.setMinimum(0.0d);
 
         velMax = new JFormattedTextField(realNumberFormatterNonNegative);
         velMax.setEnabled(useConstraint);
-        velMax.getDocument().addDocumentListener((DocumentChangeListener) e -> nVelMax = Double.parseDouble(velMax.getText()));
+        velMax.addPropertyChangeListener("value", e -> nVelMax = Double.parseDouble(velMax.getText()));
 
         accelMax = new JFormattedTextField(realNumberFormatterNonNegative);
         accelMax.setEnabled(useConstraint);
-        accelMax.getDocument().addDocumentListener((DocumentChangeListener) e -> nAccelMax = Double.parseDouble(accelMax.getText()));
+        accelMax.addPropertyChangeListener("value", e -> nAccelMax = Double.parseDouble(accelMax.getText()));
 
         //edit constraints
         usingMotionConstraintsBox = new JCheckBox("Use Velocity & Acceleration Constraint");
@@ -189,13 +154,14 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
     }
 
     public String generate(){
-        if (useVariable){
-            trajectoryOp.mapEndPos(poseVariableName + ".vec()");
-            trajectoryOp.mapEndPose(poseVariableName);
-        } else {
-            trajectoryOp.mapEndPos(String.format("new Vector2d(%f, %f)", endX, endY));
-            trajectoryOp.mapEndPose(String.format("new Pose2d(%f, %f, %f)", endX, endY, endPoseHeading));
-        }
+
+        Pose2d endPose = endPoseEditor.getPose2d();
+        double endX = endPose.getX();
+        double endY = endPose.getY();
+        double endPoseHeading = endPose.getHeading();
+
+        trajectoryOp.mapEndPos(String.format("new Vector2d(%f, %f)", endX, endY));
+        trajectoryOp.mapEndPose(String.format("new Pose2d(%f, %f, %f)", endX, endY, endPoseHeading));
 
         if (isUsingTangent){
             if (isLinkedToPose){
@@ -229,6 +195,12 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
     }
 
     public void insertSegmentIntoBuilder(TrajectorySequenceBuilder builder){
+        Pose2d endPose = endPoseEditor.getPose2d();
+        double endX = endPose.getX();
+        double endY = endPose.getY();
+        double endPoseHeading = endPose.getHeading();
+
+        //vel and accel constraints don't matter much to the shape of the trajectory
         switch (trajType){
             case lineTo:
                 builder.lineTo(new Vector2d(endX, endY));

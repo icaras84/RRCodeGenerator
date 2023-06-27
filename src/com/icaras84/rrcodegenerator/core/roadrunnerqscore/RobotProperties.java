@@ -160,6 +160,19 @@ public class RobotProperties {
         }
     }
 
+    public TrajectoryVelocityConstraint getMaxVelConstraint(double vel){
+        switch (robotType){
+            case SWERVE:
+                return new SwerveVelocityConstraint(vel, trackWidth, wheelbase);
+            case TANK:
+                return new TankVelocityConstraint(vel, trackWidth);
+            case MECANUM:
+            case CUSTOM:
+            default:
+                return new MecanumVelocityConstraint(vel, trackWidth);
+        }
+    }
+
     public String getMaxVelConstraintStringFilled(double vel){
         switch (robotType){
             case SWERVE:
@@ -175,6 +188,10 @@ public class RobotProperties {
 
     public TrajectoryAccelerationConstraint getMaxAccelConstraint(){
         return new ProfileAccelerationConstraint(maxAcceleration);
+    }
+
+    public TrajectoryAccelerationConstraint getMaxAccelConstraint(double accel){
+        return new ProfileAccelerationConstraint(accel);
     }
 
     public String getMaxAccelConstraintString(){
