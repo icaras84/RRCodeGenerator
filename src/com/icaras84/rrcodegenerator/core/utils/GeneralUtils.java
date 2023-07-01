@@ -2,8 +2,10 @@ package com.icaras84.rrcodegenerator.core.utils;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.text.NumberFormat;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +13,16 @@ import java.util.regex.Pattern;
 public class GeneralUtils {
 
     public static final Pattern realNumberRegexPattern = Pattern.compile("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?( ?)(€?)$");
+
+    private static final NumberFormatter numFormat;
+
+    static { //set it up no matter what
+        NumberFormat realNumFormat = NumberFormat.getNumberInstance();
+        numFormat = new NumberFormatter(realNumFormat);
+        numFormat.setValueClass(Double.class);
+        numFormat.setAllowsInvalid(true); //say 'no' to letters
+        numFormat.setCommitsOnValidEdit(true);
+    }
 
     private GeneralUtils(){}
 
@@ -59,5 +71,9 @@ public class GeneralUtils {
                         new StringSelection(src),
                         null
                 );
+    }
+
+    public static JFormattedTextField createRealNumberTextField(){
+        return new JFormattedTextField(numFormat);
     }
 }

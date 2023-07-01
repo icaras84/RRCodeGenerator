@@ -1,6 +1,7 @@
 package com.icaras84.rrcodegenerator.core.roadrunnerqscore;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.*;
 import com.icaras84.rrcodegenerator.core.roadrunnerqscore.trajectorysequence.TrajectorySequenceBuilder;
 
@@ -40,41 +41,38 @@ public class RobotProperties {
         this.maxAngAcceleration = maxAngAcceleration;
     }
 
-    public TrajectorySequenceBuilder constructTrajectoryBuilder(Pose2d startPose, double startTangent){
+    public TrajectoryBuilder constructTrajectoryBuilder(Pose2d startPose, double startTangent){
         switch (robotType){
             case SWERVE:
-                return new TrajectorySequenceBuilder(
+                return new TrajectoryBuilder(
                         startPose,
                         startTangent,
                         new SwerveVelocityConstraint(
                                 maxVelocity,
                                 trackWidth,
                                 wheelbase),
-                        new ProfileAccelerationConstraint(maxAcceleration),
-                        maxAngVelocity,
-                        maxAngAcceleration);
+                        new ProfileAccelerationConstraint(maxAcceleration)
+                );
             case TANK:
-                return new TrajectorySequenceBuilder(
+                return new TrajectoryBuilder(
                         startPose,
                         startTangent,
                         new TankVelocityConstraint(
                                 maxVelocity,
                                 trackWidth),
-                        new ProfileAccelerationConstraint(maxAcceleration),
-                        maxAngVelocity,
-                        maxAngAcceleration);
+                        new ProfileAccelerationConstraint(maxAcceleration)
+                );
             case MECANUM:
             case CUSTOM:
             default:
-                return new TrajectorySequenceBuilder(
+                return new TrajectoryBuilder(
                         startPose,
                         startTangent,
                         new MecanumVelocityConstraint(
                                 maxVelocity,
                                 trackWidth),
-                        new ProfileAccelerationConstraint(maxAcceleration),
-                        maxAngVelocity,
-                        maxAngAcceleration);
+                        new ProfileAccelerationConstraint(maxAcceleration)
+                );
         }
     }
 

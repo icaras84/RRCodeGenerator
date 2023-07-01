@@ -2,9 +2,10 @@ package com.icaras84.rrcodegenerator.core.renderer.ui;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
-import com.icaras84.rrcodegenerator.core.roadrunnerqscore.trajectorysequence.TrajectorySequenceBuilder;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryCollection;
 import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
+import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
 
 import javax.swing.*;
@@ -19,31 +20,26 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
 
     private CodeGenTrajectoryPanel parentPanel;
 
-    private TrajectoryOperation trajectoryOp;
+    private TrajectoryOperation trajectoryOp; //store an underlying representation of a trajectory segment
 
-    private JComboBox<TrajectoryOperation.TRAJECTORY_TYPE> trajectoryTypeSelector;
+    private JComboBox<TrajectoryOperation.TRAJECTORY_TYPE> trajectoryTypeSelector; //UI for selecting type of segment
     private TrajectoryOperation.TRAJECTORY_TYPE trajType;
 
-    private RobotProperties robotProp;
+    private Pose2dJPanel endPoseEditor; //UI for editing end pose of trajectory segment
 
-    private Pose2dJPanel endPoseEditor;
-
-    private JFormattedTextField splineTangentTextBox;
-    private JCheckBox linkPose;
+    private JFormattedTextField splineTangentTextBox;  //UI for customizing spline tangent
+    private JCheckBox linkPose; //check box for if the spline tangent is same as heading
     private boolean isUsingTangent, isLinkedToPose;
-    private double tangent;
+    private double tangent; //actual numerical value for the spline tangent
 
-    private JCheckBox usingMotionConstraintsBox;
+    private JCheckBox usingMotionConstraintsBox; //check box to see if we need to generate constraints
     private boolean useConstraint;
-    private boolean useConstraintRef;
-    private JFormattedTextField velMax, accelMax;
+    private JFormattedTextField velMax, accelMax; //UI for editing these constraints
     private double nVelMax, nAccelMax;
-    private String velConstraintStr, accelConstraintStr;
 
-    public CodeGenTrajectorySegmentPanel(CodeGenTrajectoryPanel parentPanel, RobotProperties robotProp){
+    public CodeGenTrajectorySegmentPanel(CodeGenTrajectoryPanel parentPanel){
         super();
         this.setLayout(new GridBagLayout());
-        this.robotProp = robotProp;
         this.parentPanel = parentPanel;
         this.setSize(WIDTH, HEIGHT);
         this.setMinimumSize(getSize());
@@ -109,15 +105,7 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
     }
 
     private void createSplineHeadingEditor(){
-        //Set up formatting
-        NumberFormat realNumFormat = NumberFormat.getNumberInstance();
-        realNumFormat.setMaximumFractionDigits(4);
-        NumberFormatter realNumberFormatter = new NumberFormatter(realNumFormat);
-        realNumberFormatter.setValueClass(Double.class);
-        realNumberFormatter.setAllowsInvalid(true);
-        realNumberFormatter.setCommitsOnValidEdit(true);
-
-        splineTangentTextBox = new JFormattedTextField(realNumberFormatter);
+        splineTangentTextBox = GeneralUtils.createRealNumberTextField();
         splineTangentTextBox.addPropertyChangeListener("value", e -> tangent = Double.parseDouble(splineTangentTextBox.getText()));
 
         linkPose = new JCheckBox("Use pose heading");
@@ -173,14 +161,10 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
 
         trajectoryOp.setUseVelAndAccelConstraints(useConstraint);
         if (useConstraint){
-            if (useConstraintRef){
-                trajectoryOp.mapMaxVelAndAccel(velConstraintStr, accelConstraintStr);
-            } else {
-                trajectoryOp.mapMaxVelAndAccel(
-                        robotProp.getMaxVelConstraintStringFilled(nVelMax),
-                        String.format(robotProp.getMaxAccelConstraintString(), nAccelMax)
-                );
-            }
+            trajectoryOp.mapMaxVelAndAccel(
+                    TrajectoryCollection.robotProperties.getMaxVelConstraintStringFilled(nVelMax),
+                    String.format(TrajectoryCollection.robotProperties.getMaxAccelConstraintString(), nAccelMax)
+            );
         }
 
         return trajectoryOp.generate();
@@ -194,7 +178,7 @@ public class CodeGenTrajectorySegmentPanel extends JPanel {
         return this.trajectoryOp;
     }
 
-    public void insertSegmentIntoBuilder(TrajectorySequenceBuilder builder){
+    public void insertSegmentIntoBuilder(TrajectoryBuilder builder){
         Pose2d endPose = endPoseEditor.getPose2d();
         double endX = endPose.getX();
         double endY = endPose.getY();

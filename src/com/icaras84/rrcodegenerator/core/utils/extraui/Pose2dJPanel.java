@@ -1,6 +1,7 @@
 package com.icaras84.rrcodegenerator.core.utils.extraui;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -11,16 +12,6 @@ import java.text.NumberFormat;
 public class Pose2dJPanel extends JPanel{
 
     public static final int WIDTH = 150, HEIGHT = 90;
-
-    private static final NumberFormatter numFormat;
-
-    static { //set it up no matter what
-        NumberFormat realNumFormat = NumberFormat.getNumberInstance();
-        numFormat = new NumberFormatter(realNumFormat);
-        numFormat.setValueClass(Double.class);
-        numFormat.setAllowsInvalid(true); //say 'no' to letters
-        numFormat.setCommitsOnValidEdit(true);
-    }
 
     private JFormattedTextField xTextBox, yTextBox, headingTextBox;
     private String editorTitle;
@@ -48,9 +39,9 @@ public class Pose2dJPanel extends JPanel{
     }
 
     private void createUI() {
-        xTextBox = new JFormattedTextField(numFormat);
-        yTextBox = new JFormattedTextField(numFormat);
-        headingTextBox = new JFormattedTextField(numFormat);
+        xTextBox = GeneralUtils.createRealNumberTextField();
+        yTextBox = GeneralUtils.createRealNumberTextField();
+        headingTextBox = GeneralUtils.createRealNumberTextField();
 
 
         xTextBox.setText("0");

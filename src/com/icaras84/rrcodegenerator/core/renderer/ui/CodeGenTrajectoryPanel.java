@@ -1,6 +1,8 @@
 package com.icaras84.rrcodegenerator.core.renderer.ui;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
 import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
 
@@ -14,25 +16,30 @@ public class CodeGenTrajectoryPanel extends JPanel {
         TRAJECTORY_END
     }
 
-    private LinkedList<CodeGenTrajectorySegmentPanel> trajectoryOps;
+    private LinkedList<CodeGenTrajectorySegmentPanel> trajectoryOpsPanels;
     private RobotProperties properties;
 
-    private JComboBox<START_POSE> startPoseType;
+    private JCheckBox trajLocalVar; //determines if we put in or remove the "Trajectory" typing of a variable
+    private boolean usingLocal;
+    private JTextField trajName; //provides name of existing/new trajectory
+    private String trajVarName;
+
+    private JComboBox<START_POSE> startPoseType; //determines if we start from a custom coord or the end of another trajectory
     private START_POSE startPoseState;
-    private Pose2dJPanel poseEditor;
-    private JTextField trajectoryEnd;
+    private Pose2dJPanel poseEditor; //pose editor for editing the start pose
+    private JTextField trajectoryEnd; //if trajectory is staring from the end of an existing/generated traj, enter name
     private String trajEnd;
 
-    private JCheckBox trajLocalVar;
-    private boolean usingLocal;
+    private JCheckBox startTangentIsHeading; //find out if the tangent is differing from the robot heading at that point in time
+    private JFormattedTextField startTangent; //get custom heading angle
 
-    private JTextField trajName;
-    private String trajVarName;
+    private Trajectory trajectory; //provides underlying trajectory to be queried or rendered
 
     public CodeGenTrajectoryPanel(RobotProperties properties){
         super();
         this.properties = properties;
-        this.trajectoryOps = new LinkedList<>();
+        this.trajectoryOpsPanels = new LinkedList<>();
+        this.trajectory = null;
 
         initUI();
     }
@@ -59,16 +66,18 @@ public class CodeGenTrajectoryPanel extends JPanel {
     }
 
     private void createSegment(){
-        CodeGenTrajectorySegmentPanel segmentPanel = new CodeGenTrajectorySegmentPanel(this, properties);
-        trajectoryOps.add(segmentPanel);
+        CodeGenTrajectorySegmentPanel segmentPanel = new CodeGenTrajectorySegmentPanel(this);
+        trajectoryOpsPanels.add(segmentPanel);
         add(segmentPanel);
+        regenerateTrajectory();
         repaint();
         revalidate();
     }
 
     public void requestDelete(CodeGenTrajectorySegmentPanel segmentPanel){
-        trajectoryOps.remove(segmentPanel);
+        trajectoryOpsPanels.remove(segmentPanel);
         remove(segmentPanel);
+        regenerateTrajectory();
         repaint();
         revalidate();
     }
@@ -94,9 +103,14 @@ public class CodeGenTrajectoryPanel extends JPanel {
                 .append(getTrajectoryStart())
                 .append(")\n");
 
-        trajectoryOps.forEach((op) -> output.append(op.getTrajectoryOp().generate()));
+        trajectoryOpsPanels.forEach((op) -> output.append(op.getTrajectoryOp().generate()));
 
-        output.append(".build();");
-        return "";
+        return output.append(".build();").toString();
+    }
+
+    public void regenerateTrajectory(){
+        TrajectoryBuilder builder = properties.constructTrajectoryBuilder(poseEditor.getPose2d(), poseEditor.getPose2d().getHeading());
+        trajectoryOpsPanels.forEach(t -> t.insertSegmentIntoBuilder(builder));
+        this.trajectory = builder.build();
     }
 }
