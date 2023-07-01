@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.utils;
+package com.icaras84.rrcodegenerator.core.utils.extraui;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
