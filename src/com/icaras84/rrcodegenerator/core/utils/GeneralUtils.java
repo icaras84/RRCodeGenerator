@@ -2,6 +2,7 @@ package com.icaras84.rrcodegenerator.core.utils;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.text.DefaultFormatter;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -20,7 +21,7 @@ public class GeneralUtils {
         NumberFormat realNumFormat = NumberFormat.getNumberInstance();
         numFormat = new NumberFormatter(realNumFormat);
         numFormat.setValueClass(Double.class);
-        numFormat.setAllowsInvalid(true); //say 'no' to letters
+        numFormat.setAllowsInvalid(true);
         numFormat.setCommitsOnValidEdit(true);
     }
 

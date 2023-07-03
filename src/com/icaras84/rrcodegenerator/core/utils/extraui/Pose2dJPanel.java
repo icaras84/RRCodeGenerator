@@ -91,6 +91,15 @@ public class Pose2dJPanel extends JPanel{
         add(headingTextBox, constraints);
     }
 
+    public void setEditorTitle(String nEditorTitle){
+        editorTitle = nEditorTitle;
+        editorTitleLabel.setText(editorTitle);
+    }
+
+    public String getEditorTitle(){
+        return editorTitle;
+    }
+
     public Pose2d getPose2d(){
         return new Pose2d(poseX, poseY, Math.toRadians(poseHeading));
     }
