@@ -134,5 +134,6 @@ public class CodeGenCanvasPanel {
 
         outputOptions.setSize(mainPanel.getWidth(), CodeGenMainWindow.windowSize.height);
         outputPreviewScrollPane.setSize(mainPanel.getWidth(), mainPanel.getHeight() - outputOptions.getHeight());
+        System.out.println(mainPanel.getSize());
     }
 }

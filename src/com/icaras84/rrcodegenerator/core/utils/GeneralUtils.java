@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 
 public class GeneralUtils {
 
+    public static final int JTabHeight = 24; //measured default
+
     public static final Pattern realNumberRegexPattern = Pattern.compile("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?( ?)(€?)$");
 
     private static final NumberFormatter numFormat;
