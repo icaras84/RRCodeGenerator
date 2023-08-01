@@ -4,10 +4,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
-import java.text.NumberFormat;
 
 public class Pose2dJPanel extends JPanel{
 

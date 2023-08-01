@@ -1,8 +1,9 @@
 package com.icaras84.rrcodegenerator.core.utils;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.text.DefaultFormatter;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -13,9 +14,15 @@ import java.util.regex.Pattern;
 
 public class GeneralUtils {
 
-    public static final int JTabHeight = 24; //measured default
+    public static final int JTabHeight = 25; //measured default
+
+    public static final int JScrollBarVerticalWidth = 15;
 
     public static final Pattern realNumberRegexPattern = Pattern.compile("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?( ?)(€?)$");
+
+    public static final String ALPHABET_LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+
+    public static final String ALPHABET_UPPERCASE = ALPHABET_LOWERCASE.toUpperCase();
 
     private static final NumberFormatter numFormat;
 
@@ -77,6 +84,32 @@ public class GeneralUtils {
     }
 
     public static JFormattedTextField createRealNumberTextField(){
-        return new JFormattedTextField(numFormat);
+        JFormattedTextField output = new JFormattedTextField(numFormat);
+        output.setText("0");
+        return output;
+    }
+
+    public static JFormattedTextField createNonNegativeNumberTextField() {
+        NumberFormat nonNegativeNumFormat = NumberFormat.getNumberInstance();
+        NumberFormatter localNumFormat = new NumberFormatter(nonNegativeNumFormat);
+        localNumFormat.setValueClass(Double.class);
+        localNumFormat.setAllowsInvalid(true);
+        localNumFormat.setCommitsOnValidEdit(true);
+        localNumFormat.setMinimum(0.0d);
+        JFormattedTextField output = new JFormattedTextField(localNumFormat);
+        output.setText("0");
+        return output;
+    }
+    public static void insertToolbarsIntoTabbedPane(JTabbedPane pane, JToolBar leftBar, JToolBar rightBar) {
+        pane.putClientProperty(FlatClientProperties.TABBED_PANE_LEADING_COMPONENT, leftBar);
+        pane.putClientProperty(FlatClientProperties.TABBED_PANE_TRAILING_COMPONENT, rightBar);
+    }
+
+    public static Image getImage(String filepath){
+        return Toolkit.getDefaultToolkit().getImage(GeneralUtils.class.getResource(filepath));
+    }
+
+    public static boolean isSymbol(char c){
+        return !(Character.isLetter(c) || Character.isDigit(c) || Character.isWhitespace(c));
     }
 }

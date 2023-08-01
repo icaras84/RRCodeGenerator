@@ -53,6 +53,12 @@ public class Matrix3x3 {
         );
     }
 
+    public com.acmerobotics.roadrunner.geometry.Vector2d times(double x, double y){
+        return new com.acmerobotics.roadrunner.geometry.Vector2d(
+                m[0][0] * x + m[0][1] * y + m[0][2],
+                m[1][0] * x + m[1][1] * y + m[1][2]
+        );
+    }
     public com.acmerobotics.roadrunner.geometry.Vector2d times(com.acmerobotics.roadrunner.geometry.Vector2d inputVector){
         return new com.acmerobotics.roadrunner.geometry.Vector2d(
                 m[0][0] * inputVector.getX() + m[0][1] * inputVector.getY() + m[0][2],
@@ -150,13 +156,53 @@ public class Matrix3x3 {
         return new Matrix3x3(output);
     }
 
+    public void invert(){
+        double det = det();
+        if (det == 0) return;
+
+        int multiplier = 1;
+        double[][] output = new double[3][3];
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                output[c][r] = subDet(subMatrix(r, c)) * multiplier / det;
+                multiplier *= -1;
+            }
+            multiplier *= -1;
+        }
+        m = output;
+    }
+
+    public Matrix3x3 inverted(){
+        double det = det();
+        if (det == 0) return null;
+
+        int multiplier = 1;
+        double[][] output = new double[3][3];
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                output[c][r] = subDet(subMatrix(r, c)) * multiplier / det;
+                multiplier *= -1; //transposed checkerboard pattern is itself for odd side length
+            }
+            multiplier *= -1;
+        }
+        return new Matrix3x3(output);
+    }
+
+    @Override
+    public String toString() {
+        return m[0][0] + ", " + m[0][1] + ", " + m[0][2] + "\n"
+                + m[1][0] + ", " + m[1][1] + ", " + m[1][2] + "\n"
+                + m[2][0] + ", " + m[2][1] + ", " + m[2][2];
+    }
+
     public static Matrix3x3 rotateCW(double radians){
         double cos = Math.cos(radians);
         double sin = Math.sin(radians);
         return new Matrix3x3(
                 new double[][]{
-                        {cos, sin},
-                        {-sin, cos}
+                        {cos, sin, 0},
+                        {-sin, cos, 0},
+                        {0, 0, 1}
                 }
         );
     }
