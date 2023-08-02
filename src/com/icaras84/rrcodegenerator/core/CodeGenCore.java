@@ -21,7 +21,7 @@ public class CodeGenCore {
 
     private static Timer vsyncTimer;
     private static final int VSYNC_FPS = 30;
-    private static final int PERIODIC_RENDER_TIME_MS = 1500;
+    private static final int PERIODIC_RENDER_TIME_MS = 1000 / VSYNC_FPS;
 
     public static void run(){
 
@@ -106,11 +106,9 @@ public class CodeGenCore {
         dispose();
         System.exit(0);
     }
-
     public static void render(){
         BufferStrategy bs = OutputPanel.getMainCanvas().getBufferStrategy();
         Graphics2D g = (Graphics2D) bs.getDrawGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         CanvasRenderer.updateViewMatrix(g);
         CanvasRenderer.clear(g);
         g.setColor(Color.ORANGE);

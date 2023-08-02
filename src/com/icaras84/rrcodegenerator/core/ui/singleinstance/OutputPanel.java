@@ -1,13 +1,15 @@
 package com.icaras84.rrcodegenerator.core.ui.singleinstance;
 
 import com.icaras84.rrcodegenerator.core.logic.OutputPanelLogic;
-import com.icaras84.rrcodegenerator.core.renderer.CanvasRenderer;
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 public class OutputPanel{
 
@@ -149,8 +151,9 @@ public class OutputPanel{
     public static void resize(){
         panelWidth = MainWindow.width - (TrajectoryEditorPanel.PANEL_WIDTH * 2);
         panelHeight = MainWindow.height;
-        visiblePanelWidth = panelWidth;
-        visiblePanelHeight = panelHeight - GeneralUtils.JTabHeight;
+        visiblePanelWidth = mainPanel.getVisibleRect().width;
+        //visiblePanelHeight = panelHeight - GeneralUtils.JTabHeight;
+        visiblePanelHeight = mainPanel.getVisibleRect().height;
 
         canvasWidth = visiblePanelWidth;
         canvasHeight = visiblePanelHeight;

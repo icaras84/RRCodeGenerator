@@ -30,6 +30,9 @@ public class CanvasRenderer {
     }
 
     public static void updateViewMatrix(Graphics2D g){
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
         double canvasCenterX = OutputPanel.canvasWidth / 2d;
         double canvasCenterY = OutputPanel.canvasHeight / 2d;
         double smallerSide = Math.min(canvasCenterX, canvasCenterY);
