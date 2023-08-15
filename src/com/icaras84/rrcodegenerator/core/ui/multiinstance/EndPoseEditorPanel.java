@@ -2,6 +2,7 @@ package com.icaras84.rrcodegenerator.core.ui.multiinstance;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
+import com.icaras84.rrcodegenerator.core.utils.EndPoseInfo;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
 
@@ -17,6 +18,7 @@ public class EndPoseEditorPanel extends JPanel {
     public final static int PANEL_WIDTH = 275, PANEL_HEIGHT = 240;
 
     private TrajectoryEditorPanel mainTrajectoryEditor;
+    private EndPoseInfo info;
 
     private JToolBar operations;
     private JComboBox<TrajectoryOperation.TRAJECTORY_TYPE> pathTypeBox;
@@ -30,19 +32,17 @@ public class EndPoseEditorPanel extends JPanel {
     private JLabel tangentLabel;
     private JFormattedTextField tangentEditor;
     private boolean isTangentEnabled;
-    private double splineTangentValue;
 
     private JCheckBox useConstraints;
     private JLabel velocityLabel;
     private JLabel accelerationLabel;
     private JFormattedTextField velocityEditor;
     private JFormattedTextField accelerationEditor;
-    private double velConstraintValue;
-    private double accelConstraintValue;
 
     public EndPoseEditorPanel(TrajectoryEditorPanel mainTrajectoryEditor){
         super();
         this.mainTrajectoryEditor = mainTrajectoryEditor;
+        this.info = new EndPoseInfo(mainTrajectoryEditor.getInfo());
 
         init();
         arrange();
@@ -69,6 +69,7 @@ public class EndPoseEditorPanel extends JPanel {
         operations.add(deleteButton);
 
         poseEditor = new Pose2dJPanel("Segment End Pose");
+        poseEditor.addTextBoxPropertyChangeListeners("value", this::updatePose);
 
         splineTangentAsHeading = new JCheckBox("Tangent is heading");
         splineTangentAsHeading.addItemListener(this::updateSplineTangentHandling);
@@ -142,6 +143,7 @@ public class EndPoseEditorPanel extends JPanel {
 
     private void updateTangentBoxStatus(ItemEvent e){
         pathType = (TrajectoryOperation.TRAJECTORY_TYPE) pathTypeBox.getSelectedItem();
+        info.setPathType(pathType);
         switch (Objects.requireNonNull(pathType)){
             case splineTo:
             case splineToLinearHeading:
@@ -154,42 +156,47 @@ public class EndPoseEditorPanel extends JPanel {
                 splineTangentAsHeading.setEnabled(false);
                 isTangentEnabled = false;
         }
-
         tangentEditor.setEnabled(isTangentEnabled);
+    }
+
+    private void updatePose(PropertyChangeEvent e){
+        info.setEndPose(poseEditor.getPose2d());
     }
 
     private void updateSplineTangentHandling(ItemEvent e){
         if (splineTangentAsHeading.isSelected()){
             tangentEditor.setEnabled(false);
-            splineTangentValue = poseEditor.getPose2d().getHeading();
+            info.setSplineTangent(poseEditor.getPose2d().getHeading());
         } else {
             tangentEditor.setEnabled(isTangentEnabled);
-            splineTangentValue = ((Number) tangentEditor.getValue()).doubleValue();
+            info.setSplineTangent(((Number) tangentEditor.getValue()).doubleValue());
         }
     }
 
     private void updateSplineTangentValue(PropertyChangeEvent e){
         if (tangentEditor.isEnabled())
-            splineTangentValue = ((Number) tangentEditor.getValue()).doubleValue();
+            info.setSplineTangent(((Number) tangentEditor.getValue()).doubleValue());
     }
 
     private void updateConstraintBoxStatus(ItemEvent e){
+        info.setUsingMovementConstraints(useConstraints.isSelected());
         velocityEditor.setEnabled(useConstraints.isSelected());
         accelerationEditor.setEnabled(useConstraints.isSelected());
     }
 
     private void updateVelocityConstraint(PropertyChangeEvent e){
-        velConstraintValue = ((Number) velocityEditor.getValue()).doubleValue();
+        info.setVelConstraint(((Number) velocityEditor.getValue()).doubleValue());
     }
 
     private void updateAccelerationConstraint(PropertyChangeEvent e){
-        accelConstraintValue = ((Number) accelerationEditor.getValue()).doubleValue();
+        info.setAccelConstraint(((Number) accelerationEditor.getValue()).doubleValue());
     }
     public void requestDelete(){
         requestDelete(null);
     }
 
     private void requestDelete(ActionEvent e){
+        info.delete();
         mainTrajectoryEditor.subPanelRequestDelete(this);
         mainTrajectoryEditor.remove(this);
     }
@@ -203,7 +210,7 @@ public class EndPoseEditorPanel extends JPanel {
     }
 
     public double getSplineTangentValue(){
-        return splineTangentValue;
+        return info.getSplineTangent();
     }
 
     public boolean isUsingConstraints(){
@@ -211,10 +218,10 @@ public class EndPoseEditorPanel extends JPanel {
     }
 
     public double getVelocityConstraintValue(){
-        return velConstraintValue;
+        return info.getVelConstraint();
     }
 
     public double getAccelerationConstraintValue(){
-        return accelConstraintValue;
+        return info.getAccelConstraint();
     }
 }

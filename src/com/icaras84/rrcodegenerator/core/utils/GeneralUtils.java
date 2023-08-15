@@ -112,4 +112,13 @@ public class GeneralUtils {
     public static boolean isSymbol(char c){
         return !(Character.isLetter(c) || Character.isDigit(c) || Character.isWhitespace(c));
     }
+
+    public static void ensureJComponentSize(JComponent component, int width, int height){
+        Dimension size = new Dimension(width, height);
+
+        component.setSize(size);
+        component.setPreferredSize(size);
+        component.setMinimumSize(size);
+        component.setMaximumSize(size);
+    }
 }

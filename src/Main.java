@@ -1,5 +1,12 @@
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.icaras84.rrcodegenerator.core.CodeGenCore;
+import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
 
 import java.util.ArrayList;
 import java.util.Queue;

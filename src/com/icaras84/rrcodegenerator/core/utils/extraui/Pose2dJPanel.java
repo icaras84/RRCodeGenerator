@@ -6,8 +6,13 @@ import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class Pose2dJPanel extends JPanel{
+
+    public enum VAR_TYPE{
+        X, Y, HEADING
+    }
 
     public static final int WIDTH = 150, HEIGHT = 90;
 
@@ -112,6 +117,26 @@ public class Pose2dJPanel extends JPanel{
 
     private void retrieveHeading(PropertyChangeEvent e){
         poseHeading = ((Number) headingTextBox.getValue()).doubleValue();
+    }
+
+    public void addTextBoxPropertyChangeListener(VAR_TYPE type, String propertyName, PropertyChangeListener propertyChangeListener){
+        switch (type){
+            case X:
+                xTextBox.addPropertyChangeListener(propertyName, propertyChangeListener);
+                break;
+            case Y:
+                yTextBox.addPropertyChangeListener(propertyName, propertyChangeListener);
+                break;
+            case HEADING:
+                headingTextBox.addPropertyChangeListener(propertyName, propertyChangeListener);
+                break;
+        }
+    }
+
+    public void addTextBoxPropertyChangeListeners(String propertyName, PropertyChangeListener propertyChangeListener){
+        xTextBox.addPropertyChangeListener(propertyName, propertyChangeListener);
+        yTextBox.addPropertyChangeListener(propertyName, propertyChangeListener);
+        headingTextBox.addPropertyChangeListener(propertyName, propertyChangeListener);
     }
 
     public String toString(){

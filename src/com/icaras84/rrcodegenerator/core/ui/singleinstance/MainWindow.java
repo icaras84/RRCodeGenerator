@@ -1,9 +1,11 @@
 package com.icaras84.rrcodegenerator.core.ui.singleinstance;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -30,11 +32,15 @@ public class MainWindow {
     public static void init(int initWidth, int initHeight){
         initVariables(initWidth, initHeight);
 
-        mainFrame = new JFrame(TITLE);
+        JFrame.setDefaultLookAndFeelDecorated(true);
 
+        mainFrame = new JFrame(TITLE);
         mainFrame.setLayout(new BoxLayout(mainFrame.getContentPane(), BoxLayout.X_AXIS));
         GeneralUtils.changeTitleBar(mainFrame);
 
+        /*
+        if (SystemInfo.isMacOS) MainWindow.getMainFrame().getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
+         */
 
         ImageIcon i16 = new ImageIcon(GeneralUtils.getImage("/window_icon/RRCodeGenIcon16.png"));
         ImageIcon i32 = new ImageIcon(GeneralUtils.getImage("/window_icon/RRCodeGenIcon32.png"));
@@ -68,22 +74,19 @@ public class MainWindow {
         });
         mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        TrajectoryEditorPanel tpep = new TrajectoryEditorPanel();
+        createSubUI();
 
-        TrajectoryEditorPanel tepep = new TrajectoryEditorPanel();
+        mainFrame.setVisible(true);
+    }
 
+    private static void createSubUI(){
         OutputPanel.init();
         TrajectoryEditorPanel.initMain();
         NavigationPanel.init();
-        JPanel output = new JPanel();
 
         mainFrame.add(NavigationPanel.getPanel());
         mainFrame.add(TrajectoryEditorPanel.getReservedPanel());
         mainFrame.add(OutputPanel.getPanel());
-
-        output.repaint();
-
-        mainFrame.setVisible(true);
     }
 
     private static void initVariables(int initWidth, int initHeight){
@@ -126,6 +129,10 @@ public class MainWindow {
         }
 
         mainFrame.dispose();
+    }
+
+    public static JFrame getMainFrame(){
+        return mainFrame;
     }
 
     public static synchronized void repaint(){

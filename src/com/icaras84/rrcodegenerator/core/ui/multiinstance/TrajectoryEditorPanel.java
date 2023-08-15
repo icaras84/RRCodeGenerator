@@ -3,11 +3,11 @@ package com.icaras84.rrcodegenerator.core.ui.multiinstance;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.MainWindow;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
+import com.icaras84.rrcodegenerator.core.utils.TrajectoryInfo;
 import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
-import java.text.ParseException;
 import java.util.Vector;
 
 public class TrajectoryEditorPanel extends JPanel {
@@ -16,32 +16,28 @@ public class TrajectoryEditorPanel extends JPanel {
     private static final int trajInitPanelHeight = Pose2dJPanel.HEIGHT + 40;
     public static final int PANEL_WIDTH = EndPoseEditorPanel.PANEL_WIDTH + GeneralUtils.JScrollBarVerticalWidth;
 
+    private TrajectoryInfo info;
     private Vector<EndPoseEditorPanel> endPoseEditors;
 
     private JToolBar toolBar;
     private JButton addNewEditor;
 
     private Pose2dJPanel startPoseEditor;
-    private JFormattedTextField trajNameEditor; //use mask formatter
-    private String trajName = "Empty";
+    private JFormattedTextField trajNameEditor;
 
     private JScrollPane scrolledView;
     private JPanel editorPane;
 
     public TrajectoryEditorPanel(){
         super();
-
-        try {
-            init();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        info = new TrajectoryInfo();
+        init();
         arrange();
 
         MainWindow.submitResizeOperation(this::resize);
     }
 
-    public void init() throws ParseException {
+    public void init()  {
         endPoseEditors = new Vector<>();
 
         toolBar = new JToolBar();
@@ -59,8 +55,8 @@ public class TrajectoryEditorPanel extends JPanel {
         startPoseEditor.setBorder(null);
 
         trajNameEditor = new JFormattedTextField();
-        trajNameEditor.setValue(trajName);
-        trajNameEditor.setText(trajName);
+        trajNameEditor.setValue(info.getTrajectoryName());
+        trajNameEditor.setText(info.getTrajectoryName());
         trajNameEditor.addPropertyChangeListener("value", this::setTrajName);
         trajNameEditor.setSize(PANEL_WIDTH / 2, 20);
         trajNameEditor.setPreferredSize(trajNameEditor.getSize());
@@ -109,8 +105,8 @@ public class TrajectoryEditorPanel extends JPanel {
     }
 
     private void setTrajName(PropertyChangeEvent evt){
-        this.trajName = cleanTrajName(trajNameEditor.getValue().toString());
-        trajNameEditor.setText(this.trajName);
+        info.setTrajectoryName(cleanTrajName(trajNameEditor.getValue().toString()));
+        trajNameEditor.setText(info.getTrajectoryName());
     }
 
     public static String cleanTrajName(String trajName){
@@ -139,7 +135,11 @@ public class TrajectoryEditorPanel extends JPanel {
     }
 
     public Pose2d getStartPose(){
-        return startPoseEditor.getPose2d();
+        return info.getStartPose();
+    }
+
+    public TrajectoryInfo getInfo(){
+        return info;
     }
 
     private static JPanel reservedPanel;
@@ -187,8 +187,5 @@ public class TrajectoryEditorPanel extends JPanel {
         return reservedPanel;
     }
 
-    @Override
-    public String toString(){
-        return trajName;
-    }
+
 }

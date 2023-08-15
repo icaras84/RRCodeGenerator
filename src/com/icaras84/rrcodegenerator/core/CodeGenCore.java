@@ -64,7 +64,7 @@ public class CodeGenCore {
 
         RunOnce renderTask = new RunOnce(true, () -> {
             CodeGenCore.render();
-            System.out.println("Rendered!");
+            //System.out.println("Rendered!");
             OutputPanelLogic.queuedRender = false;
         });
         Timer renderDelay = new Timer(PERIODIC_RENDER_TIME_MS, e -> renderTask.reset()); //tab switching has some intrinsic delay in rendering
