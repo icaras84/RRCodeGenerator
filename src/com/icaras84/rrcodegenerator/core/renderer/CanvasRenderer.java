@@ -55,8 +55,15 @@ public class CanvasRenderer {
     }
 
     public static void clear(Graphics2D g){
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.fillRect(0, 0, OutputPanel.canvasWidth, OutputPanel.canvasHeight);
+
+        g.setColor(Color.WHITE);
+        double canvasCenterX = OutputPanel.canvasWidth / 2d;
+        double canvasCenterY = OutputPanel.canvasHeight / 2d;
+        Vector2d fieldCorner1 = viewTransform.times(new Vector2d(FIELD_HALF, FIELD_HALF));
+        Vector2d scale = viewTransform.times(new Vector2d(FIELD_HALF, FIELD_HALF)).minus(new Vector2d(canvasCenterX, canvasCenterY));
+        g.fillRect((int) fieldCorner1.getX(), (int) fieldCorner1.getY(), (int) Math.abs(scale.getX()) * 2, (int) Math.abs(scale.getX()) * 2);
     }
 
     public static void markCenter(Graphics2D g){

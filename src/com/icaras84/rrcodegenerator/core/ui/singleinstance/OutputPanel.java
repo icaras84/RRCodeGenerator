@@ -170,7 +170,7 @@ public class OutputPanel{
         return mainPanel;
     }
 
-    public static TAB_SELECTION getTabSelection(){
+    public synchronized static TAB_SELECTION getTabSelection(){
         int tabIdx = mainPanel.getSelectedIndex();
         TAB_SELECTION output = null;
         if (tabIdx == TAB_SELECTION.VIEWPORT.idx){
@@ -181,7 +181,7 @@ public class OutputPanel{
         return output;
     }
 
-    public static Canvas getMainCanvas(){
+    public synchronized static Canvas getMainCanvas(){
         return mainCanvas;
     }
 }
