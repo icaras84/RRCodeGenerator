@@ -1,6 +1,7 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui;
 
 import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 
 import javax.swing.*;
 

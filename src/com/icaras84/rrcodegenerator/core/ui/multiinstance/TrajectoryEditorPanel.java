@@ -1,9 +1,9 @@
 package com.icaras84.rrcodegenerator.core.ui.multiinstance;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.MainWindow;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
-import com.icaras84.rrcodegenerator.core.utils.TrajectoryInfo;
+import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
 import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
 
 import javax.swing.*;

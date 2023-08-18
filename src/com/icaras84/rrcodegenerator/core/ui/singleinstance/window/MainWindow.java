@@ -1,11 +1,11 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.window;
 
-import com.formdev.flatlaf.util.SystemInfo;
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.ui.NavigationPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import javax.swing.*;
-import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;

@@ -1,14 +1,14 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.ui;
 
-import com.icaras84.rrcodegenerator.core.logic.NavigationPanelLogic;
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.logic.NavigationPanelLogic;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
-import com.icaras84.rrcodegenerator.core.utils.TrajectoryInfo;
+import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
 import com.icaras84.rrcodegenerator.core.utils.extraui.JListDnDHandler;
 import com.icaras84.rrcodegenerator.core.utils.extraui.NavListCellRenderer;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 

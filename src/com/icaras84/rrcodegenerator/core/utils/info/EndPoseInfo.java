@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.utils;
+package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;

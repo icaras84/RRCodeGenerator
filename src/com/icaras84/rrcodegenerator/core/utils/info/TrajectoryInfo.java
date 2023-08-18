@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.utils;
+package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
@@ -14,12 +14,19 @@ public class TrajectoryInfo {
         trajectoryName = "Empty";
         endPoses = new Vector<>();
     }
+
     public void add(EndPoseInfo endPoseInfo){
         endPoses.add(endPoseInfo);
     }
 
     public void delete(EndPoseInfo endPoseInfo){
         endPoses.remove(endPoseInfo);
+    }
+
+    public void revalidatePoses(){
+        for (EndPoseInfo poseInfo: endPoses) {
+            poseInfo.setMainTrajectory(this);
+        }
     }
 
     public String getTrajectoryName() {

@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.path.Path;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.OutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.maths.Matrix3x3;
 
 import java.awt.*;
@@ -15,7 +15,7 @@ public class CanvasRenderer {
 
     public static double FIELD_WIDTH =  141; //internal field width in inches
     public static double FIELD_LENGTH = 141; //internal field length in inches
-    public static double TILE_WIDTH = FIELD_WIDTH / 6d;
+    public static double TILE_WIDTH = FIELD_WIDTH / 6d; //internal field is 6x6 tile side lengths
     public static double TILE_LENGTH = FIELD_LENGTH / 6d;
     public static double FIELD_HALF = FIELD_WIDTH / 2d;
     public static double ROBOT_RADIUS = 9;

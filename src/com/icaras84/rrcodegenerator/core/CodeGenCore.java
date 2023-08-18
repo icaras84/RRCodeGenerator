@@ -5,11 +5,11 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.formdev.flatlaf.util.SystemInfo;
-import com.icaras84.rrcodegenerator.core.logic.OutputPanelLogic;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.logic.OutputPanelLogic;
 import com.icaras84.rrcodegenerator.core.renderer.CanvasRenderer;
 import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.MainWindow;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.OutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.RunOnce;
 
 import javax.swing.*;
@@ -31,34 +31,14 @@ public class CodeGenCore {
 
     private static Vector<CoreUpdate> updates;
 
-    public static void run(){
+    public static void initUpdateList(){
         updates = new Vector<>();
-        updates.add(new CoreUpdate() {
+    }
 
-            RobotProperties properties = new RobotProperties();
-            Trajectory traj = properties.constructTrajectoryBuilder(new Pose2d(0, 0, Math.PI / 2), Math.PI / 2)
-                    .splineTo(new Vector2d(30, 30), Math.PI * 0.6)
-                    .splineToSplineHeading(new Pose2d(-30, 45, Math.PI), Math.PI)
-                    .build();
-
-            Stroke normalStroke = new BasicStroke(1);
-            Stroke pathStroke = new BasicStroke(3);
-
-            @Override
-            public void fixedUpdate(float fixedDeltaTimeMs, float fixedDeltaTimeSec) {
-
-            }
-
-            @Override
-            public void render(Graphics2D g, float fixedDeltaTimeMs, float fixedDeltaTimeSec) {
-                g.setColor(Color.BLACK);
-                g.setStroke(pathStroke);
-                CanvasRenderer.drawTrajectory(g, traj);
-                g.setColor(Color.GREEN);
-                CanvasRenderer.drawPose(g, traj.start());
-                CanvasRenderer.drawPose(g, traj.end());
-            }
-        });
+    public static void submitUpdatable(CoreUpdate update){
+        updates.add(update);
+    }
+    public static void run(){
 
         if (!created){
 

@@ -1,7 +1,7 @@
-package com.icaras84.rrcodegenerator.core.logic;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.logic;
 
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
-import com.icaras84.rrcodegenerator.core.utils.TrajectoryInfo;
+import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
 
 import javax.swing.*;
 import java.util.Map;
