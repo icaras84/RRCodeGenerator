@@ -6,7 +6,7 @@ import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
 public class EndPoseInfo {
     private TrajectoryInfo mainTrajectory;
 
-    private TrajectoryOperation.TRAJECTORY_TYPE pathType;
+    private TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE pathType;
     private double x, y, heading, splineTangent;
     private boolean isUsingMovementConstraints;
     private double velConstraint;
@@ -31,11 +31,11 @@ public class EndPoseInfo {
         this.mainTrajectory.add(this);
     }
 
-    public TrajectoryOperation.TRAJECTORY_TYPE getPathType() {
+    public TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE getPathType() {
         return pathType;
     }
 
-    public void setPathType(TrajectoryOperation.TRAJECTORY_TYPE pathType) {
+    public void setPathType(TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE pathType) {
         this.pathType = pathType;
     }
 

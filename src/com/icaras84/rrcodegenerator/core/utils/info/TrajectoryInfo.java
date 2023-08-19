@@ -79,6 +79,18 @@ public class TrajectoryInfo {
         this.endPoses = endPoses;
     }
 
+    public int getEndPoseBufferLength(){
+        return endPoses.size();
+    }
+
+    public EndPoseInfo getEndPose(int n){
+        return endPoses.get(n);
+    }
+
+    public void setEndPose(int n, EndPoseInfo poseInfo){
+        endPoses.set(n, poseInfo);
+    }
+
     public String toString(){
         return trajectoryName;
     }

@@ -21,8 +21,8 @@ public class EndPoseEditorPanel extends JPanel {
     private EndPoseInfo info;
 
     private JToolBar operations;
-    private JComboBox<TrajectoryOperation.TRAJECTORY_TYPE> pathTypeBox;
-    private TrajectoryOperation.TRAJECTORY_TYPE pathType;
+    private JComboBox<TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE> pathTypeBox;
+    private TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE pathType;
 
     private JButton deleteButton;
 
@@ -59,7 +59,7 @@ public class EndPoseEditorPanel extends JPanel {
         operations = new JToolBar();
 
 
-        pathTypeBox = new JComboBox<>(TrajectoryOperation.TRAJECTORY_TYPE.values());
+        pathTypeBox = new JComboBox<>(TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE.values());
         pathTypeBox.addItemListener(this::updateTangentBoxStatus);
 
         deleteButton = new JButton("Delete");
@@ -142,7 +142,7 @@ public class EndPoseEditorPanel extends JPanel {
     }
 
     private void updateTangentBoxStatus(ItemEvent e){
-        pathType = (TrajectoryOperation.TRAJECTORY_TYPE) pathTypeBox.getSelectedItem();
+        pathType = (TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE) pathTypeBox.getSelectedItem();
         info.setPathType(pathType);
         switch (Objects.requireNonNull(pathType)){
             case splineTo:
@@ -201,7 +201,7 @@ public class EndPoseEditorPanel extends JPanel {
         mainTrajectoryEditor.remove(this);
     }
 
-    public TrajectoryOperation.TRAJECTORY_TYPE getPathType(){
+    public TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE getPathType(){
         return pathType;
     }
 

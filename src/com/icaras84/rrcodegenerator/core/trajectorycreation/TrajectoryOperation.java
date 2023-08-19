@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class TrajectoryOperation {
 
-    public enum TRAJECTORY_TYPE{
+    public enum TRAJECTORY_SEGMENT_TYPE {
         lineTo,
         lineToConstantHeading,
         lineToLinearHeading,
@@ -30,16 +30,16 @@ public class TrajectoryOperation {
         }
     }
 
-    private TRAJECTORY_TYPE trajectoryType;
+    private TRAJECTORY_SEGMENT_TYPE trajectoryType;
     private boolean useVelAndAccelConstraints;
 
     private HashMap<String, String> parameterMapping;
 
-    public TrajectoryOperation(TRAJECTORY_TYPE trajectoryType){
+    public TrajectoryOperation(TRAJECTORY_SEGMENT_TYPE trajectoryType){
         this(trajectoryType, false);
     }
 
-    public TrajectoryOperation(TRAJECTORY_TYPE trajectoryType, boolean useVelAndAccelConstraints){
+    public TrajectoryOperation(TRAJECTORY_SEGMENT_TYPE trajectoryType, boolean useVelAndAccelConstraints){
         this.trajectoryType = trajectoryType;
         this.useVelAndAccelConstraints = useVelAndAccelConstraints;
         parameterMapping = new HashMap<>();
@@ -124,11 +124,11 @@ public class TrajectoryOperation {
         return output.append(")\n").toString();
     }
 
-    public TRAJECTORY_TYPE getTrajectoryType() {
+    public TRAJECTORY_SEGMENT_TYPE getTrajectoryType() {
         return trajectoryType;
     }
 
-    public void setTrajectoryType(TRAJECTORY_TYPE trajectoryType) {
+    public void setTrajectoryType(TRAJECTORY_SEGMENT_TYPE trajectoryType) {
         this.trajectoryType = trajectoryType;
     }
 
