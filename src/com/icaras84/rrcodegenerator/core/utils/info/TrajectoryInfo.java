@@ -91,6 +91,12 @@ public class TrajectoryInfo {
         endPoses.set(n, poseInfo);
     }
 
+    public String createCodeString(){
+        StringBuilder output = new StringBuilder();
+
+        return output.toString();
+    }
+
     public String toString(){
         return trajectoryName;
     }

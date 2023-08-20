@@ -1,8 +1,7 @@
-package com.icaras84.rrcodegenerator.core.roadrunnerqscore.trajectorysequence;
+package com.icaras84.rrcodegenerator.core.trajectorycreation.trajectorysequence;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
-import com.icaras84.rrcodegenerator.core.roadrunnerqscore.trajectorysequence.sequencesegment.SequenceSegment;
+import com.icaras84.rrcodegenerator.core.trajectorycreation.trajectorysequence.sequencesegment.SequenceSegment;
 
 import java.util.Collections;
 import java.util.List;

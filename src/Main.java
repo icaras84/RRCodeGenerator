@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.icaras84.rrcodegenerator.core.CodeGenCore;
 import com.icaras84.rrcodegenerator.core.CoreUpdate;
 import com.icaras84.rrcodegenerator.core.renderer.CanvasRenderer;
-import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
+import com.icaras84.rrcodegenerator.core.utils.info.RobotPropertyInfo;
 
 import java.awt.*;
 
@@ -16,7 +16,7 @@ public class Main {
         //demonstrate trajectory rendering
         CodeGenCore.submitUpdatable(new CoreUpdate() {
 
-            RobotProperties properties = new RobotProperties();
+            RobotPropertyInfo properties = new RobotPropertyInfo();
             Trajectory traj = properties.constructTrajectoryBuilder(new Pose2d(0, 0, Math.PI / 2), Math.PI / 2)
                     .splineTo(new Vector2d(30, 30), Math.PI * 0.6)
                     .splineToSplineHeading(new Pose2d(-30, 45, Math.PI), Math.PI)

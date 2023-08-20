@@ -1,13 +1,9 @@
 package com.icaras84.rrcodegenerator.core;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.logic.OutputPanelLogic;
 import com.icaras84.rrcodegenerator.core.renderer.CanvasRenderer;
-import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.RunOnce;

@@ -1,12 +1,12 @@
 package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui;
 
-import com.icaras84.rrcodegenerator.core.roadrunnerqscore.RobotProperties;
+import com.icaras84.rrcodegenerator.core.utils.info.RobotPropertyInfo;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 
 import javax.swing.*;
 
 public class SettingsPanel {
-    public static RobotProperties robotProperties;
+    public static RobotPropertyInfo robotPropertyInfo;
 
     private static JPanel mainPanel;
 

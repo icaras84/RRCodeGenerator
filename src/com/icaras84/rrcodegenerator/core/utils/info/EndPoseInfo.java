@@ -104,4 +104,36 @@ public class EndPoseInfo {
     public void setAccelConstraint(double accelConstraint) {
         this.accelConstraint = accelConstraint;
     }
+
+    public String getAsMethodString(){
+        StringBuilder output = new StringBuilder(".");
+        switch (pathType){
+            case lineTo:
+                output.append(String.format("lineTo(new Vector2d(%.3f, %.3f)", x, y));
+                break;
+            case lineToConstantHeading:
+                output.append(String.format("lineToConstantHeading(new Vector2d(%.3f, %.3f)", x, y));
+                break;
+            case lineToLinearHeading:
+                output.append(String.format("lineToLinearHeading(new Pose2d(%.3f, %.3f, %.3f)", x, y, heading));
+                break;
+            case lineToSplineHeading:
+                output.append(String.format("lineToSplineHeading(new Pose2d(%.3f, %.3f, %.3f)", x, y, heading));
+                break;
+            case splineTo:
+                output.append(String.format("splineTo(new Vector2d(%.3f, %.3f), %.3f", x, y, splineTangent));
+                break;
+            case splineToConstantHeading:
+                output.append(String.format("splineToConstantHeading(new Vector2d(%.3f, %.3f), %.3f", x, y, splineTangent));
+                break;
+            case splineToLinearHeading:
+                output.append(String.format("splineToLinearHeading(new Pose2d(%.3f, %.3f, %.3f), %.3f", x, y, heading, splineTangent));
+                break;
+            case splineToSplineHeading:
+                output.append(String.format("splineToSplineHeading(new Pose2d(%.3f, %.3f, %.3f), %.3f", x, y, heading, splineTangent));
+                break;
+        }
+        output.append(")");
+        return output.toString();
+    }
 }

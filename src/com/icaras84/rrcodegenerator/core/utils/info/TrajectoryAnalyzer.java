@@ -6,7 +6,6 @@ import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
 
 import java.util.Stack;
 import java.util.Vector;
-import java.util.function.Predicate;
 
 public class TrajectoryAnalyzer {
     private static class Analysis{

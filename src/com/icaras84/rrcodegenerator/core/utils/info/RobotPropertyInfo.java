@@ -1,11 +1,10 @@
-package com.icaras84.rrcodegenerator.core.roadrunnerqscore;
+package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.*;
-import com.icaras84.rrcodegenerator.core.roadrunnerqscore.trajectorysequence.TrajectorySequenceBuilder;
 
-public class RobotProperties {
+public class RobotPropertyInfo {
 
     public enum ROBOT_TYPE{
         CUSTOM,
@@ -15,15 +14,16 @@ public class RobotProperties {
     }
 
     private ROBOT_TYPE robotType;
-    private double trackWidth, wheelbase;
+    private double trackWidth, wheelbase, lateralMultiplier;
     private double maxVelocity, maxAcceleration;
     private double maxAngVelocity, maxAngAcceleration;
 
-    public RobotProperties(){
+    public RobotPropertyInfo(){
         this(
                 ROBOT_TYPE.MECANUM,
                 17,
                 17,
+                1.2,
                 30,
                 60,
                 Math.PI / 3,
@@ -31,10 +31,11 @@ public class RobotProperties {
         );
     }
 
-    public RobotProperties(ROBOT_TYPE robotType, double trackWidth, double wheelbase, double maxVelocity, double maxAcceleration, double maxAngVelocity, double maxAngAcceleration) {
+    public RobotPropertyInfo(ROBOT_TYPE robotType, double trackWidth, double wheelbase, double lateralMultiplier, double maxVelocity, double maxAcceleration, double maxAngVelocity, double maxAngAcceleration) {
         this.robotType = robotType;
         this.trackWidth = trackWidth;
         this.wheelbase = wheelbase;
+        this.lateralMultiplier = lateralMultiplier;
         this.maxVelocity = maxVelocity;
         this.maxAcceleration = maxAcceleration;
         this.maxAngVelocity = maxAngVelocity;
@@ -100,6 +101,14 @@ public class RobotProperties {
         this.wheelbase = wheelbase;
     }
 
+    public double getLateralMultiplier() {
+        return lateralMultiplier;
+    }
+
+    public void setLateralMultiplier(double lateralMultiplier) {
+        this.lateralMultiplier = lateralMultiplier;
+    }
+
     public double getMaxVelocity() {
         return maxVelocity;
     }
@@ -141,7 +150,7 @@ public class RobotProperties {
             case MECANUM:
             case CUSTOM:
             default:
-                return new MecanumVelocityConstraint(maxVelocity, trackWidth);
+                return new MecanumVelocityConstraint(maxVelocity, trackWidth, wheelbase, lateralMultiplier);
         }
     }
 
@@ -154,7 +163,7 @@ public class RobotProperties {
             case MECANUM:
             case CUSTOM:
             default:
-                return "new MecanumVelocityConstraint(%s, %s)";
+                return "new MecanumVelocityConstraint(%s, %s, %s, %s)";
         }
     }
 
@@ -167,7 +176,7 @@ public class RobotProperties {
             case MECANUM:
             case CUSTOM:
             default:
-                return new MecanumVelocityConstraint(vel, trackWidth);
+                return new MecanumVelocityConstraint(vel, trackWidth, wheelbase, lateralMultiplier);
         }
     }
 
@@ -180,7 +189,7 @@ public class RobotProperties {
             case MECANUM:
             case CUSTOM:
             default:
-                return String.format("new MecanumVelocityConstraint(%s, %s)", vel, trackWidth);
+                return String.format("new MecanumVelocityConstraint(%s, %s, %s, %s)", vel, trackWidth, wheelbase, lateralMultiplier);
         }
     }
 
