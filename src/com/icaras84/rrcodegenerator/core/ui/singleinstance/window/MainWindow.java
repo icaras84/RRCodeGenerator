@@ -2,7 +2,7 @@ package com.icaras84.rrcodegenerator.core.ui.singleinstance.window;
 
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.ui.NavigationPanel;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui.OutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import javax.swing.*;

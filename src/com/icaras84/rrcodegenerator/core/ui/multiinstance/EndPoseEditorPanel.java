@@ -1,7 +1,6 @@
 package com.icaras84.rrcodegenerator.core.ui.multiinstance;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
 import com.icaras84.rrcodegenerator.core.utils.info.EndPoseInfo;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
@@ -21,8 +20,8 @@ public class EndPoseEditorPanel extends JPanel {
     private EndPoseInfo info;
 
     private JToolBar operations;
-    private JComboBox<TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE> pathTypeBox;
-    private TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE pathType;
+    private JComboBox<EndPoseInfo.TRAJECTORY_SEGMENT_TYPE> pathTypeBox;
+    private EndPoseInfo.TRAJECTORY_SEGMENT_TYPE pathType;
 
     private JButton deleteButton;
 
@@ -59,7 +58,7 @@ public class EndPoseEditorPanel extends JPanel {
         operations = new JToolBar();
 
 
-        pathTypeBox = new JComboBox<>(TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE.values());
+        pathTypeBox = new JComboBox<>(EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.values());
         pathTypeBox.addItemListener(this::updateTangentBoxStatus);
 
         deleteButton = new JButton("Delete");
@@ -142,7 +141,7 @@ public class EndPoseEditorPanel extends JPanel {
     }
 
     private void updateTangentBoxStatus(ItemEvent e){
-        pathType = (TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE) pathTypeBox.getSelectedItem();
+        pathType = (EndPoseInfo.TRAJECTORY_SEGMENT_TYPE) pathTypeBox.getSelectedItem();
         info.setPathType(pathType);
         switch (Objects.requireNonNull(pathType)){
             case splineTo:
@@ -196,12 +195,12 @@ public class EndPoseEditorPanel extends JPanel {
     }
 
     private void requestDelete(ActionEvent e){
-        info.delete();
+        info.delete(mainTrajectoryEditor.getInfo());
         mainTrajectoryEditor.subPanelRequestDelete(this);
         mainTrajectoryEditor.remove(this);
     }
 
-    public TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE getPathType(){
+    public EndPoseInfo.TRAJECTORY_SEGMENT_TYPE getPathType(){
         return pathType;
     }
 

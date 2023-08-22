@@ -1,41 +1,53 @@
 package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.settings.logic.SettingsLogic;
 
 public class EndPoseInfo {
-    private TrajectoryInfo mainTrajectory;
+    public enum TRAJECTORY_SEGMENT_TYPE {
+        lineTo,
+        lineToConstantHeading,
+        lineToLinearHeading,
+        lineToSplineHeading,
 
-    private TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE pathType;
+        splineTo,
+        splineToConstantHeading,
+        splineToLinearHeading,
+        splineToSplineHeading
+    }
+
+    private EndPoseInfo.TRAJECTORY_SEGMENT_TYPE pathType;
     private double x, y, heading, splineTangent;
     private boolean isUsingMovementConstraints;
     private double velConstraint;
     private double accelConstraint;
 
-    public EndPoseInfo(TrajectoryInfo mainTrajectory){
-        this.mainTrajectory = mainTrajectory;
-        mainTrajectory.add(this);
+    public EndPoseInfo(TrajectoryInfo mainTrajectory) {
+        pathType = TRAJECTORY_SEGMENT_TYPE.splineTo;
+        add(mainTrajectory);
     }
 
-    public void delete(){
-        mainTrajectory.delete(this);
+    public EndPoseInfo(EndPoseInfo poseInfo){
+        this.pathType = poseInfo.pathType;
+        setEndPose(poseInfo.getEndPose());
+        this.isUsingMovementConstraints = poseInfo.isUsingMovementConstraints;
+        this.velConstraint = poseInfo.velConstraint;
+        this.accelConstraint = poseInfo.accelConstraint;
     }
 
-    public TrajectoryInfo getMainTrajectory() {
-        return mainTrajectory;
+    public void add(TrajectoryInfo parentTrajectory){
+        parentTrajectory.add(this);
     }
 
-    public void setMainTrajectory(TrajectoryInfo mainTrajectory) {
-        if (this.mainTrajectory != null) delete();
-        this.mainTrajectory = mainTrajectory;
-        this.mainTrajectory.add(this);
+    public void delete(TrajectoryInfo parentTrajectory) {
+        parentTrajectory.delete(this);
     }
 
-    public TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE getPathType() {
+    public EndPoseInfo.TRAJECTORY_SEGMENT_TYPE getPathType() {
         return pathType;
     }
 
-    public void setPathType(TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE pathType) {
+    public void setPathType(EndPoseInfo.TRAJECTORY_SEGMENT_TYPE pathType) {
         this.pathType = pathType;
     }
 
@@ -71,11 +83,11 @@ public class EndPoseInfo {
         this.splineTangent = splineTangent;
     }
 
-    public Pose2d getEndPose(){
+    public Pose2d getEndPose() {
         return new Pose2d(x, y, heading);
     }
 
-    public void setEndPose(Pose2d pose){
+    public void setEndPose(Pose2d pose) {
         x = pose.getX();
         y = pose.getY();
         heading = pose.getHeading();
@@ -105,9 +117,9 @@ public class EndPoseInfo {
         this.accelConstraint = accelConstraint;
     }
 
-    public String getAsMethodString(){
+    public String getAsMethodString() {
         StringBuilder output = new StringBuilder(".");
-        switch (pathType){
+        switch (pathType) {
             case lineTo:
                 output.append(String.format("lineTo(new Vector2d(%.3f, %.3f)", x, y));
                 break;
@@ -133,6 +145,14 @@ public class EndPoseInfo {
                 output.append(String.format("splineToSplineHeading(new Pose2d(%.3f, %.3f, %.3f), %.3f", x, y, heading, splineTangent));
                 break;
         }
+
+        if (isUsingMovementConstraints) {
+            output.append(", ");
+            output.append(SettingsLogic.settingsInfo.getRobotProperties().getMaxVelConstraintStringFilled(velConstraint));
+            output.append(", ");
+            output.append(SettingsLogic.settingsInfo.getRobotProperties().getMaxAccelConstraintStringFilled(accelConstraint));
+        }
+
         output.append(")");
         return output.toString();
     }

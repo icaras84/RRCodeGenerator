@@ -7,7 +7,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.*;
 public class RobotPropertyInfo {
 
     public enum ROBOT_TYPE{
-        CUSTOM,
         MECANUM,
         TANK,
         SWERVE
@@ -63,8 +62,6 @@ public class RobotPropertyInfo {
                                 trackWidth),
                         new ProfileAccelerationConstraint(maxAcceleration)
                 );
-            case MECANUM:
-            case CUSTOM:
             default:
                 return new TrajectoryBuilder(
                         startPose,
@@ -147,8 +144,6 @@ public class RobotPropertyInfo {
                 return new SwerveVelocityConstraint(maxVelocity, trackWidth, wheelbase);
             case TANK:
                 return new TankVelocityConstraint(maxVelocity, trackWidth);
-            case MECANUM:
-            case CUSTOM:
             default:
                 return new MecanumVelocityConstraint(maxVelocity, trackWidth, wheelbase, lateralMultiplier);
         }
@@ -160,8 +155,6 @@ public class RobotPropertyInfo {
                 return "new SwerveVelocityConstraint(%s, %s, %s)";
             case TANK:
                 return "new TankVelocityConstraint(%s, %s)";
-            case MECANUM:
-            case CUSTOM:
             default:
                 return "new MecanumVelocityConstraint(%s, %s, %s, %s)";
         }
@@ -173,8 +166,6 @@ public class RobotPropertyInfo {
                 return new SwerveVelocityConstraint(vel, trackWidth, wheelbase);
             case TANK:
                 return new TankVelocityConstraint(vel, trackWidth);
-            case MECANUM:
-            case CUSTOM:
             default:
                 return new MecanumVelocityConstraint(vel, trackWidth, wheelbase, lateralMultiplier);
         }
@@ -186,8 +177,6 @@ public class RobotPropertyInfo {
                 return String.format("new SwerveVelocityConstraint(%s, %s, %s)", vel, trackWidth, wheelbase);
             case TANK:
                 return String.format("new TankVelocityConstraint(%s, %s)", vel, trackWidth);
-            case MECANUM:
-            case CUSTOM:
             default:
                 return String.format("new MecanumVelocityConstraint(%s, %s, %s, %s)", vel, trackWidth, wheelbase, lateralMultiplier);
         }
@@ -203,5 +192,9 @@ public class RobotPropertyInfo {
 
     public String getMaxAccelConstraintString(){
         return "new ProfileAccelerationConstraint(%s)";
+    }
+
+    public String getMaxAccelConstraintStringFilled(double accel){
+        return String.format("new ProfileAccelerationConstraint(%s)", accel);
     }
 }

@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.codeoutput.ui;
 
 import javax.swing.*;
 

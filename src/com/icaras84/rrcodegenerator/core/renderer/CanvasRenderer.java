@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.path.Path;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui.OutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.maths.Matrix3x3;
 
 import java.awt.*;

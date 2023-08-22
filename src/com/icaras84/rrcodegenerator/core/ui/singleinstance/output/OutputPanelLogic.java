@@ -1,6 +1,6 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.logic;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.output;
 
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui.OutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import java.awt.event.ActionEvent;

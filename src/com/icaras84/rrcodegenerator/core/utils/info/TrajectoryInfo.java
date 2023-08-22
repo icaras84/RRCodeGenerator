@@ -2,9 +2,12 @@ package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 public class TrajectoryInfo {
+
+
 
     private String trajectoryName;
     private double startX, startY, startHeading;
@@ -23,10 +26,22 @@ public class TrajectoryInfo {
         endPoses.remove(endPoseInfo);
     }
 
-    public void revalidatePoses(){
-        for (EndPoseInfo poseInfo: endPoses) {
-            poseInfo.setMainTrajectory(this);
+    public void delete(int idx){
+        endPoses.remove(idx);
+    }
+
+    public void delete(int... indices){
+        Arrays.sort(indices);
+        for (int i = 0; i < indices.length; i++) {
+            endPoses.remove(indices[indices.length - i - 1]);
         }
+    }
+
+    public void revalidate(){
+        Vector<EndPoseInfo> poseCache = new Vector<>(endPoses);
+        endPoses.clear();
+        for (EndPoseInfo pose: poseCache) endPoses.add(new EndPoseInfo(pose));
+        poseCache.clear();
     }
 
     public String getTrajectoryName() {

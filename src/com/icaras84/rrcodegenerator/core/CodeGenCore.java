@@ -2,10 +2,10 @@ package com.icaras84.rrcodegenerator.core;
 
 import com.formdev.flatlaf.IntelliJTheme;
 import com.formdev.flatlaf.util.SystemInfo;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.logic.OutputPanelLogic;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanelLogic;
 import com.icaras84.rrcodegenerator.core.renderer.CanvasRenderer;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui.OutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.RunOnce;
 
 import javax.swing.*;

@@ -2,7 +2,6 @@ package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.icaras84.rrcodegenerator.core.trajectorycreation.TrajectoryOperation;
 
 import java.util.Stack;
 import java.util.Vector;
@@ -87,7 +86,7 @@ public class TrajectoryAnalyzer {
         return tangentialDirection != 1f;
     }
 
-    private static boolean pathTypeIsSpline(TrajectoryOperation.TRAJECTORY_SEGMENT_TYPE trajectoryType){
+    private static boolean pathTypeIsSpline(EndPoseInfo.TRAJECTORY_SEGMENT_TYPE trajectoryType){
         switch (trajectoryType){
             case splineTo:
             case splineToConstantHeading:

@@ -1,5 +1,6 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.settings.ui;
 
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.info.RobotPropertyInfo;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 

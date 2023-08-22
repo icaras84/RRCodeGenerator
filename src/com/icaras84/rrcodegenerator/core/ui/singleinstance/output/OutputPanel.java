@@ -1,6 +1,5 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.ui;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.output;
 
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.logic.OutputPanelLogic;
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
