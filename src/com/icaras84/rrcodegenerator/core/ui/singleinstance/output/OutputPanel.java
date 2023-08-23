@@ -1,6 +1,7 @@
 package com.icaras84.rrcodegenerator.core.ui.singleinstance.output;
 
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.settings.ui.SettingsPanel;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
@@ -15,7 +16,8 @@ public class OutputPanel{
 
     public enum TAB_SELECTION{
         VIEWPORT("Viewport", 0),
-        CODE_OUT("Code", 1);
+        CODE_OUT("Code", 1),
+        SETTINGS("Settings", 2);
 
         private int idx;
         private String tabName;
@@ -73,6 +75,9 @@ public class OutputPanel{
 
         GeneralUtils.insertToolbarsIntoTabbedPane(mainPanel, inputBar, null);
 
+        SettingsPanel.init();
+        mainPanel.addTab(TAB_SELECTION.SETTINGS.tabName, SettingsPanel.getMainPanel());
+
         resize();
         MainWindow.submitResizeOperation(OutputPanel::resize);
     }
@@ -102,7 +107,7 @@ public class OutputPanel{
 
     private static void initCodeGenOutput(){
         codeGenPanel = new JPanel();
-        codeGenOutput = new JLabel();
+        codeGenOutput = new JLabel("Hello");
 
         codeGenPanel.add(codeGenOutput);
     }
@@ -177,6 +182,8 @@ public class OutputPanel{
             output = TAB_SELECTION.VIEWPORT;
         } else if (tabIdx == TAB_SELECTION.CODE_OUT.idx){
             output = TAB_SELECTION.CODE_OUT;
+        } else if (tabIdx == TAB_SELECTION.SETTINGS.idx) {
+            output = TAB_SELECTION.SETTINGS;
         }
         return output;
     }
