@@ -1,7 +1,8 @@
 package com.icaras84.rrcodegenerator.core.ui.singleinstance.output;
 
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.settings.ui.SettingsPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.tabs.ui.CodeOutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.tabs.ui.settingsui.SettingsPanel;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
@@ -37,19 +38,6 @@ public class OutputPanel{
     private static JPanel canvasPanel;
     private static Canvas mainCanvas;
 
-    private static JPanel codeGenPanel;
-    private static JLabel codeGenOutput;
-    private static String codeGenStringOutput;
-
-    private static JPanel enabledTrajectoriesPanel;
-
-    private static JPanel settingsPanel;
-
-    private static JToolBar inputBar;
-    private static JButton queueRender;
-    private static JButton generateCode;
-    private static JButton copyGeneratedCode;
-
     public static int mouseX, mouseY;
 
     private OutputPanel(){}
@@ -67,13 +55,10 @@ public class OutputPanel{
         });
 
         initCanvasPanel();
-        initCodeGenOutput();
-        initToolbar();
-
         mainPanel.addTab(TAB_SELECTION.VIEWPORT.tabName, canvasPanel);
-        mainPanel.addTab(TAB_SELECTION.CODE_OUT.tabName, codeGenPanel);
 
-        GeneralUtils.insertToolbarsIntoTabbedPane(mainPanel, inputBar, null);
+        CodeOutputPanel.init();
+        mainPanel.addTab(TAB_SELECTION.CODE_OUT.tabName, CodeOutputPanel.getMainPanel());
 
         SettingsPanel.init();
         mainPanel.addTab(TAB_SELECTION.SETTINGS.tabName, SettingsPanel.getMainPanel());
@@ -91,6 +76,7 @@ public class OutputPanel{
                         .getDefaultScreenDevice()
                         .getDefaultConfiguration()
         );
+
         canvasPanel.add(mainCanvas, BorderLayout.CENTER);
         mainCanvas.setBackground(Color.BLACK);
         canvasPanel.setBackground(Color.BLACK);
@@ -105,53 +91,7 @@ public class OutputPanel{
         });
     }
 
-    private static void initCodeGenOutput(){
-        codeGenPanel = new JPanel();
-        codeGenOutput = new JLabel("Hello");
 
-        codeGenPanel.add(codeGenOutput);
-    }
-
-    private static void initToolbar(){
-        /*
-        generateCode = new JButton(new ImageIcon(GeneralUtils.getImage("/button_icons/intellij_icons/minimap_dark.png")));
-        generateCode.addActionListener(OutputPanelLogic::generateCode);
-        generateCode.setToolTipText("Generate trajectory code."); //icon might not be clear
-        generateCode.setSize(16, 16);
-
-         */
-
-        copyGeneratedCode = new JButton(new ImageIcon(GeneralUtils.getImage("/button_icons/intellij_icons/copy_dark.png")));
-        copyGeneratedCode.addActionListener(OutputPanelLogic::copyGeneratedCodeButton);
-        copyGeneratedCode.setToolTipText("Copy generated trajectory code.");
-        copyGeneratedCode.setSize(16, 16);
-
-        queueRender = new JButton(new ImageIcon(GeneralUtils.getImage("/button_icons/intellij_icons/editSource_dark.png")));
-        queueRender.addActionListener(OutputPanelLogic::queueRender);
-        queueRender.setToolTipText("Render enabled trajectories.");
-        queueRender.setSize(16, 16);
-
-        inputBar = new JToolBar();
-        inputBar.setSize(56, 16);
-        inputBar.setPreferredSize(inputBar.getSize());
-        inputBar.setMinimumSize(inputBar.getSize());
-        inputBar.setMaximumSize(inputBar.getSize());
-        inputBar.setBorder(null);
-        inputBar.setFloatable(false);
-        inputBar.setRollover(false);
-
-        //inputBar.add(generateCode);
-        inputBar.add(copyGeneratedCode);
-        inputBar.add(queueRender);
-    }
-
-    public static String getCodeGenStringOutput() {
-        return codeGenStringOutput;
-    }
-
-    public static void setCodeGenStringOutput(String codeGenStringOutput) {
-        OutputPanel.codeGenStringOutput = codeGenStringOutput;
-    }
 
     public static void resize(){
         panelWidth = MainWindow.width - (TrajectoryEditorPanel.PANEL_WIDTH * 2);

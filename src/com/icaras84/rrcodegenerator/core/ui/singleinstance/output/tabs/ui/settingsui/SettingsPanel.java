@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.settings.ui;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.tabs.ui.settingsui;
 
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;

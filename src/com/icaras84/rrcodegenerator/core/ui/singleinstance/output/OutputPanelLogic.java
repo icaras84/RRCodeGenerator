@@ -10,7 +10,7 @@ public class OutputPanelLogic {
     public static boolean queuedRender;
 
     public static void copyGeneratedCodeButton(ActionEvent e){
-        GeneralUtils.copyStringToClipboard(OutputPanel.getCodeGenStringOutput());
+
     }
 
     public synchronized static void queueRender(ActionEvent e){

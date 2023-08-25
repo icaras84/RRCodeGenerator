@@ -54,7 +54,7 @@ public class MainWindow {
         mainFrame.setIconImages(windowIcons);
 
         //deal with window size
-        mainFrame.setMinimumSize(new Dimension(720, 405));
+        mainFrame.setMinimumSize(new Dimension(820, 405));
         mainFrame.setSize(initWidth, initHeight);
         mainFrame.addComponentListener(new ComponentAdapter() {
             @Override

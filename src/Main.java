@@ -1,14 +1,10 @@
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.icaras84.rrcodegenerator.core.CodeGenCore;
 import com.icaras84.rrcodegenerator.core.CoreUpdate;
-import com.icaras84.rrcodegenerator.core.renderer.CanvasRenderer;
-import com.icaras84.rrcodegenerator.core.utils.info.EndPoseInfo;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer.CanvasRenderer;
 import com.icaras84.rrcodegenerator.core.utils.info.RobotPropertyInfo;
-import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
 
 import java.awt.*;
 
@@ -61,12 +57,12 @@ public class Main {
 
             @Override
             public void render(Graphics2D g, float fixedDeltaTimeMs, float fixedDeltaTimeSec) {
-                g.setColor(Color.BLACK);
-                g.setStroke(pathStroke);
-                CanvasRenderer.drawTrajectory(g, traj);
-                g.setColor(Color.GREEN);
-                CanvasRenderer.drawPose(g, traj.start());
-                CanvasRenderer.drawPose(g, traj.end());
+                CanvasRenderer.setColor(Color.BLACK);
+                CanvasRenderer.setPenStroke(pathStroke);
+                CanvasRenderer.drawTrajectory(traj);
+                CanvasRenderer.setColor(Color.GREEN);
+                CanvasRenderer.drawPose(traj.start());
+                CanvasRenderer.drawPose(traj.end());
             }
         });
 

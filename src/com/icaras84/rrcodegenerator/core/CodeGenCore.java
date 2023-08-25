@@ -3,7 +3,7 @@ package com.icaras84.rrcodegenerator.core;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanelLogic;
-import com.icaras84.rrcodegenerator.core.renderer.CanvasRenderer;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer.CanvasRenderer;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.window.MainWindow;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
 import com.icaras84.rrcodegenerator.core.utils.RunOnce;
@@ -138,7 +138,7 @@ public class CodeGenCore {
         BufferStrategy bs = OutputPanel.getMainCanvas().getBufferStrategy();
         Graphics2D g = (Graphics2D) bs.getDrawGraphics();
         CanvasRenderer.updateViewMatrix(g);
-        CanvasRenderer.clear(g);
+        CanvasRenderer.clear();
         for (CoreUpdate update : updates) {
             update.render(g, fixedDeltaTimeMs, fixedDeltaTimeSec);
         }

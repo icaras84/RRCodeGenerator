@@ -1,7 +1,7 @@
 package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.settings.logic.SettingsLogic;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.tabs.logic.SettingsLogic;
 
 public class EndPoseInfo {
     public enum TRAJECTORY_SEGMENT_TYPE {

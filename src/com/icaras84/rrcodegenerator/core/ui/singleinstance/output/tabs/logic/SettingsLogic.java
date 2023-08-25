@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.settings.logic;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.tabs.logic;
 
 import com.icaras84.rrcodegenerator.core.utils.info.RobotPropertyInfo;
 import com.icaras84.rrcodegenerator.core.utils.info.SettingsInfo;

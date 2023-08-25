@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.renderer;
+package com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -19,17 +19,21 @@ public class CanvasRenderer {
     public static double TILE_LENGTH = FIELD_LENGTH / 6d;
     public static double FIELD_HALF = FIELD_WIDTH / 2d;
     public static double ROBOT_RADIUS = 9;
-    public static boolean rotatedField = true;
+    public static boolean rotatedField = false;
+
+    public static Vector2d CANVAS_FIELD_TL, CANVAS_FIELD_BR;
 
     private static Matrix3x3 viewTransform;
     private static double scalingFactor;
 
+    private static Graphics2D g;
     public static void init(){
         OutputPanel.createBuffers();
         viewTransform = new Matrix3x3();
     }
 
     public static void updateViewMatrix(Graphics2D g){
+        CanvasRenderer.g = g;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
@@ -46,27 +50,33 @@ public class CanvasRenderer {
             viewTransform.m[0][1] = -scalingFactor;
             viewTransform.m[1][0] = -scalingFactor;
             viewTransform.m[1][1] = 0;
+
+            CANVAS_FIELD_TL = viewTransform.times(FIELD_HALF, FIELD_HALF);
+            CANVAS_FIELD_BR = viewTransform.times(-FIELD_HALF, -FIELD_HALF);
         } else {
             viewTransform.m[0][0] = scalingFactor;
             viewTransform.m[0][1] = 0;
             viewTransform.m[1][0] = 0;
             viewTransform.m[1][1] = -scalingFactor;
+
+            CANVAS_FIELD_TL = viewTransform.times(-FIELD_HALF, FIELD_HALF);
+            CANVAS_FIELD_BR = viewTransform.times(FIELD_HALF, -FIELD_HALF);
         }
     }
 
-    public static void clear(Graphics2D g){
+    public static void clear(){
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, OutputPanel.canvasWidth, OutputPanel.canvasHeight);
 
         g.setColor(Color.WHITE);
-        double canvasCenterX = OutputPanel.canvasWidth / 2d;
-        double canvasCenterY = OutputPanel.canvasHeight / 2d;
-        Vector2d fieldCorner1 = viewTransform.times(new Vector2d(FIELD_HALF, FIELD_HALF));
-        Vector2d scale = viewTransform.times(new Vector2d(FIELD_HALF, FIELD_HALF)).minus(new Vector2d(canvasCenterX, canvasCenterY));
-        g.fillRect((int) fieldCorner1.getX(), (int) fieldCorner1.getY(), (int) Math.abs(scale.getX()) * 2, (int) Math.abs(scale.getX()) * 2);
+        g.fillRect(
+                (int) CANVAS_FIELD_TL.getX(), (int) CANVAS_FIELD_TL.getY(),
+                (int) (CANVAS_FIELD_BR.getX() - CANVAS_FIELD_TL.getX()),
+                (int) (CANVAS_FIELD_BR.getY() - CANVAS_FIELD_TL.getY())
+        );
     }
 
-    public static void markCenter(Graphics2D g){
+    public static void markCenter(){
         double canvasCenterX = OutputPanel.canvasWidth / 2d;
         double canvasCenterY = OutputPanel.canvasHeight / 2d;
         g.setColor(Color.WHITE);
@@ -74,7 +84,7 @@ public class CanvasRenderer {
         g.drawLine((int) canvasCenterX, (int) (canvasCenterY - 30), (int) canvasCenterX, (int) (canvasCenterY + 30));
     }
 
-    public static void drawSampledPath(Graphics2D g, Path path, double resolution){
+    public static void drawSampledPath(Path path, double resolution){
         int samples = (int) Math.ceil(path.length() / resolution);
         double[] xPoints = new double[samples];
         double[] yPoints = new double[samples];
@@ -85,14 +95,14 @@ public class CanvasRenderer {
             xPoints[i] = pose.getX();
             yPoints[i] = pose.getY();
         }
-        strokePolyline(g, xPoints, yPoints);
+        strokePolyline(xPoints, yPoints);
     }
 
-    public static void drawSampledPath(Graphics2D g, Path path){
-        drawSampledPath(g, path, DEFAULT_PATH_RESOLUTION);
+    public static void drawSampledPath(Path path){
+        drawSampledPath(path, DEFAULT_PATH_RESOLUTION);
     }
 
-    public static void strokePolyline(Graphics2D g, double[] x, double[] y){
+    public static void strokePolyline(double[] x, double[] y){
         int minimumPoints = Math.min(x.length, y.length);
         int[] canvasX = new int[minimumPoints];
         int[] canvasY = new int[minimumPoints];
@@ -106,23 +116,23 @@ public class CanvasRenderer {
         g.drawPolyline(canvasX, canvasY, minimumPoints);
     }
 
-    public static void drawLine(Graphics2D g, double x0, double y0, double x1, double y1){
+    public static void drawLine(double x0, double y0, double x1, double y1){
         Vector2d end1 = viewTransform.times(x0, y0);
         Vector2d end2 = viewTransform.times(x1, y1);
         g.drawLine((int) end1.getX(), (int) end1.getY(), (int) end2.getX(), (int) end2.getY());
     }
 
-    public static void drawPose(Graphics2D g, Pose2d pose2d){
+    public static void drawPose(Pose2d pose2d){
         //draw radius
         g.setColor(Color.ORANGE);
         g.setStroke(new BasicStroke(2.5f));
-        drawCircle(g, pose2d.vec(), ROBOT_RADIUS);
+        drawCircle(pose2d.vec(), ROBOT_RADIUS);
 
         Vector2d scaledHeading = pose2d.headingVec().times(ROBOT_RADIUS);
         Vector2d scaledTangent = new Vector2d(scaledHeading.getY(), -scaledHeading.getX());
         //draw axes
         g.setColor(Color.RED);
-        drawLine(g,
+        drawLine(
                 pose2d.getX(),
                 pose2d.getY(),
                 pose2d.getX() + scaledHeading.getX(),
@@ -130,7 +140,7 @@ public class CanvasRenderer {
         );
 
         g.setColor(Color.BLUE);
-        drawLine(g,
+        drawLine(
                 pose2d.getX(),
                 pose2d.getY(),
                 pose2d.getX() + scaledTangent.getX(),
@@ -138,7 +148,7 @@ public class CanvasRenderer {
         );
     }
 
-    public static void drawCircle(Graphics2D g, Vector2d pos, double radius){
+    public static void drawCircle(Vector2d pos, double radius){
         Vector2d o = viewTransform.times(pos);
         radius *= scalingFactor;
         double centeredX = o.getX() - radius;
@@ -153,7 +163,15 @@ public class CanvasRenderer {
         );
     }
 
-    public static void drawTrajectory(Graphics2D g, Trajectory op){
-        drawSampledPath(g, op.getPath());
+    public static void drawTrajectory(Trajectory op){
+        drawSampledPath(op.getPath());
+    }
+
+    public static void setColor(Color strokeColor){
+        g.setColor(strokeColor);
+    }
+
+    public static void setPenStroke(Stroke penStroke){
+        g.setStroke(penStroke);
     }
 }
