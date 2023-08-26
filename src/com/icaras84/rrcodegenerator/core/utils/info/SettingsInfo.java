@@ -1,5 +1,7 @@
 package com.icaras84.rrcodegenerator.core.utils.info;
 
+import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
+
 public class SettingsInfo {
     private RobotPropertyInfo robotProperties;
 

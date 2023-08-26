@@ -1,6 +1,10 @@
 package com.icaras84.rrcodegenerator.core.utils.maths;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+
 public class Matrix3x3 {
+
+    public static final Matrix3x3 IDENTITY = new Matrix3x3();
 
     public double[][] m;
 
@@ -190,7 +194,7 @@ public class Matrix3x3 {
 
     @Override
     public String toString() {
-        return m[0][0] + ", " + m[0][1] + ", " + m[0][2] + "\n"
+        return    m[0][0] + ", " + m[0][1] + ", " + m[0][2] + "\n"
                 + m[1][0] + ", " + m[1][1] + ", " + m[1][2] + "\n"
                 + m[2][0] + ", " + m[2][1] + ", " + m[2][2];
     }
@@ -200,14 +204,34 @@ public class Matrix3x3 {
         double sin = Math.sin(radians);
         return new Matrix3x3(
                 new double[][]{
-                        {cos, sin, 0},
+                        { cos, sin, 0},
                         {-sin, cos, 0},
-                        {0, 0, 1}
+                        {   0,   0, 1}
                 }
         );
     }
 
     public static Matrix3x3 rotateCCW(double radians){
         return rotateCW(-radians);
+    }
+
+    public static Matrix3x3 translate(com.acmerobotics.roadrunner.geometry.Vector2d translation){
+        return new Matrix3x3(new double[][]{
+                {1, 0, translation.getX()},
+                {0, 1, translation.getY()},
+                {0, 0, 1}
+        });
+    }
+
+    public static Matrix3x3 transform(Pose2d transform){
+        double cos = Math.cos(-transform.getHeading());
+        double sin = Math.sin(-transform.getHeading());
+        return new Matrix3x3(
+                new double[][]{
+                        { cos, sin, transform.getX()},
+                        {-sin, cos, transform.getY()},
+                        {   0,   0, 1}
+                }
+        );
     }
 }

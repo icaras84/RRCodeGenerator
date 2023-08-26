@@ -2,7 +2,7 @@ package com.icaras84.rrcodegenerator.core.ui.singleinstance.output.tabs.ui.setti
 
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.tabs.logic.SettingsLogic;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
-import com.icaras84.rrcodegenerator.core.utils.info.RobotPropertyInfo;
+import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
 
 import javax.swing.*;
 import java.awt.*;

@@ -116,6 +116,40 @@ public class CanvasRenderer {
         g.drawPolyline(canvasX, canvasY, minimumPoints);
     }
 
+    public static void strokePolyline(Vector2d[] points){
+        strokePolyline(points, Matrix3x3.IDENTITY, false);
+    }
+
+    public static void strokePolyline(Vector2d[] points, Matrix3x3 additionalTransform, boolean fullPoly){
+        int[] canvasX = new int[points.length + (fullPoly ? 1 : 0)];
+        int[] canvasY = new int[points.length + (fullPoly ? 1 : 0)];
+
+        for (int i = 0; i < points.length; i++) {
+            Vector2d output = viewTransform.times(additionalTransform.times(points[i]));
+            canvasX[i] = (int) output.getX();
+            canvasY[i] = (int) output.getY();
+        }
+
+        if (fullPoly){
+            canvasX[canvasX.length - 1] = canvasX[0];
+            canvasY[canvasY.length - 1] = canvasY[0];
+        }
+
+        g.drawPolyline(canvasX, canvasY, canvasX.length);
+    }
+
+    public static void fillPolygon(Vector2d[] points, Matrix3x3 additionalTransform){
+        int[] canvasX = new int[points.length];
+        int[] canvasY = new int[points.length];
+
+        for (int i = 0; i < points.length; i++) {
+            Vector2d output = viewTransform.times(additionalTransform.times(points[i]));
+            canvasX[i] = (int) output.getX();
+            canvasY[i] = (int) output.getY();
+        }
+        g.fillPolygon(new Polygon(canvasX, canvasY, points.length));
+    }
+
     public static void drawLine(double x0, double y0, double x1, double y1){
         Vector2d end1 = viewTransform.times(x0, y0);
         Vector2d end2 = viewTransform.times(x1, y1);

@@ -4,7 +4,9 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.icaras84.rrcodegenerator.core.CodeGenCore;
 import com.icaras84.rrcodegenerator.core.CoreUpdate;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer.CanvasRenderer;
-import com.icaras84.rrcodegenerator.core.utils.info.RobotPropertyInfo;
+import com.icaras84.rrcodegenerator.core.utils.maths.Matrix3x3;
+import com.icaras84.rrcodegenerator.core.utils.robot.RobotComponent;
+import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
 
 import java.awt.*;
 
@@ -41,6 +43,12 @@ public class Main {
         //demonstrate trajectory rendering
         CodeGenCore.submitUpdatable(new CoreUpdate() {
 
+            RobotComponent cp = new RobotComponent(Color.BLACK,
+                    new Vector2d(9, 9),
+                    new Vector2d(9, -9),
+                    new Vector2d(-9, -9),
+                    new Vector2d(-9, 9));
+
             RobotPropertyInfo properties = new RobotPropertyInfo();
             Trajectory traj = properties.constructTrajectoryBuilder(new Pose2d(0, 0, Math.PI / 2), Math.PI / 2)
                     .splineTo(new Vector2d(30, 30), Math.PI * 0.6)
@@ -50,9 +58,12 @@ public class Main {
             Stroke normalStroke = new BasicStroke(1);
             Stroke pathStroke = new BasicStroke(3);
 
+            double currentTime = 0;
+
             @Override
             public void fixedUpdate(float fixedDeltaTimeMs, float fixedDeltaTimeSec) {
-
+                currentTime += fixedDeltaTimeSec;
+                currentTime %= traj.duration();
             }
 
             @Override
@@ -63,6 +74,9 @@ public class Main {
                 CanvasRenderer.setColor(Color.GREEN);
                 CanvasRenderer.drawPose(traj.start());
                 CanvasRenderer.drawPose(traj.end());
+
+                CanvasRenderer.drawPose(traj.get(currentTime));
+                cp.render(Matrix3x3.transform(traj.get(currentTime)));
             }
         });
 

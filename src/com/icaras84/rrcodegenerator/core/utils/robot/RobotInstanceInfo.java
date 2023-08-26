@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.utils.info;
+package com.icaras84.rrcodegenerator.core.utils.robot;
 
 import com.icaras84.rrcodegenerator.core.utils.maths.Matrix3x3;
 

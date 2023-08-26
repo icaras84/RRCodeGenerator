@@ -1,7 +1,9 @@
-package com.icaras84.rrcodegenerator.core.utils.info;
+package com.icaras84.rrcodegenerator.core.utils.trajectory;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.icaras84.rrcodegenerator.core.utils.info.EndPoseInfo;
+import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
 
 import java.util.Stack;
 import java.util.Vector;
