@@ -196,9 +196,9 @@ public class TimelinePlayer {
         playerLoopButton.repaint();
     }
 
-    private static long accumulatedTime = 0;
-    private static PLAY_STATE playerState = PLAY_STATE.PAUSED;
-    private static boolean loopState = false;
+    private volatile static long accumulatedTime = 0;
+    private volatile static PLAY_STATE playerState = PLAY_STATE.PAUSED;
+    private volatile static boolean loopState = false;
 
     public static void update(long deltaTimeMs){
         if (playerState == PLAY_STATE.PLAYING){
@@ -241,6 +241,7 @@ public class TimelinePlayer {
 
     public static void setMaxMs(double maxTime){
         maxMs = (int) maxTime;
+        rangeModel.setMaximum(maxMs);
     }
 
     public static double getCurrentTime(){
