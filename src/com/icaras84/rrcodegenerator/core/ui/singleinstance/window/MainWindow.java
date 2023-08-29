@@ -1,8 +1,10 @@
 package com.icaras84.rrcodegenerator.core.ui.singleinstance.window;
 
+import com.icaras84.rrcodegenerator.core.CoreUpdate;
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.ui.NavigationPanel;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.tools.ui.ToolPanel;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import javax.swing.*;
@@ -77,16 +79,23 @@ public class MainWindow {
         createSubUI();
 
         mainFrame.setVisible(true);
+
     }
 
     private static void createSubUI(){
         OutputPanel.init();
         TrajectoryEditorPanel.initMain();
         NavigationPanel.init();
+        ToolPanel.init();
+
+        JPanel outputAndTools = new JPanel();
+        outputAndTools.setLayout(new BoxLayout(outputAndTools, BoxLayout.Y_AXIS));
+        outputAndTools.add(ToolPanel.getMainPanel());
+        outputAndTools.add(OutputPanel.getPanel());
 
         mainFrame.add(NavigationPanel.getPanel());
         mainFrame.add(TrajectoryEditorPanel.getReservedPanel());
-        mainFrame.add(OutputPanel.getPanel());
+        mainFrame.add(outputAndTools);
     }
 
     private static void initVariables(int initWidth, int initHeight){

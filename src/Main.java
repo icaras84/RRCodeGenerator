@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.icaras84.rrcodegenerator.core.CodeGenCore;
 import com.icaras84.rrcodegenerator.core.CoreUpdate;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer.CanvasRenderer;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.tools.ui.TimelinePlayer;
 import com.icaras84.rrcodegenerator.core.utils.maths.Matrix3x3;
 import com.icaras84.rrcodegenerator.core.utils.robot.RobotComponent;
 import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
@@ -61,9 +62,13 @@ public class Main {
             double currentTime = 0;
 
             @Override
+            public void lateInit() {
+                TimelinePlayer.setMaxMs(traj.duration() * 1000d);
+            }
+
+            @Override
             public void fixedUpdate(float fixedDeltaTimeMs, float fixedDeltaTimeSec) {
-                currentTime += fixedDeltaTimeSec;
-                currentTime %= traj.duration();
+
             }
 
             @Override
@@ -75,8 +80,8 @@ public class Main {
                 CanvasRenderer.drawPose(traj.start());
                 CanvasRenderer.drawPose(traj.end());
 
-                CanvasRenderer.drawPose(traj.get(currentTime));
-                cp.render(Matrix3x3.transform(traj.get(currentTime)));
+                CanvasRenderer.drawPose(traj.get(TimelinePlayer.getCurrentTime()));
+                cp.render(Matrix3x3.transform(traj.get(TimelinePlayer.getCurrentTime())));
             }
         });
 

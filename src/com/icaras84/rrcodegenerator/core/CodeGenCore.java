@@ -16,7 +16,7 @@ import java.util.Vector;
 public class CodeGenCore {
 
     private static boolean created = false;
-    private static boolean swingUiCreated = false;
+    private static volatile boolean swingUiCreated = false;
     private static boolean pendingProgramExit = false;
 
     private static Timer vsyncTimer;
@@ -96,12 +96,18 @@ public class CodeGenCore {
         OutputPanel.TAB_SELECTION lastSelection, currentSelection = null;
         boolean lastResizeState, currResizeState = true;
 
+        while (!swingUiCreated){}
+
+        for (CoreUpdate update : updates) {
+            update.lateInit();
+        }
+
         while (!pendingProgramExit){
             pendingProgramExit = MainWindow.isClosing();
 
             //canRender controls if OutputPanel has properly been created
             //Tab Selection is to prevent the GPU drawing over other tabs' content, consequently optimizing it
-            if (swingUiCreated){
+
 
                 lastSelection = currentSelection;
                 currentSelection = OutputPanel.getTabSelection();
@@ -122,7 +128,7 @@ public class CodeGenCore {
                 if (lastResizeState != currResizeState && currResizeState == !MainWindow.isResizing()){
                     renderTask.reset();
                 }
-            }
+
 
             renderTask.run();
         }

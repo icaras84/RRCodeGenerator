@@ -39,12 +39,12 @@ public class TimelinePlayer {
         PLAYING
     }
 
-    public static final ImageIcon icnPause = new FlatSVGIcon("window_icon/button_icons/intellij_icons/pause_dark.svg");
-    public static final ImageIcon icnPlay = new FlatSVGIcon("window_icon/button_icons/intellij_icons/play_forward_dark.svg");
-    public static final ImageIcon icnLast = new FlatSVGIcon("window_icon/button_icons/intellij_icons/play_last_dark.svg");
-    public static final ImageIcon icnFirst = new FlatSVGIcon("window_icon/button_icons/intellij_icons/play_first_dark.svg");
-    public static final ImageIcon icnLoopT = new FlatSVGIcon("window_icon/button_icons/intellij_icons/forceRefresh_dark.svg");
-    public static final ImageIcon icnLoopF = new FlatSVGIcon("window_icon/button_icons/intellij_icons/refresh_dark.svg");
+    public static final ImageIcon icnPause = new FlatSVGIcon("window_icon/button_icons/pause_dark.svg");
+    public static final ImageIcon icnPlay = new FlatSVGIcon("window_icon/button_icons/play_forward_dark.svg");
+    public static final ImageIcon icnLast = new FlatSVGIcon("window_icon/button_icons/play_last_dark.svg");
+    public static final ImageIcon icnFirst = new FlatSVGIcon("window_icon/button_icons/play_first_dark.svg");
+    public static final ImageIcon icnLoopT = new FlatSVGIcon("window_icon/button_icons/forceRefresh_dark.svg");
+    public static final ImageIcon icnLoopF = new FlatSVGIcon("window_icon/button_icons/refresh_dark.svg");
 
     public static int WIDTH = 300, HEIGHT = 70;
 
