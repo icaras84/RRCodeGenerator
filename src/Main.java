@@ -44,11 +44,8 @@ public class Main {
         //demonstrate trajectory rendering
         CodeGenCore.submitUpdatable(new CoreUpdate() {
 
-            RobotComponent cp = new RobotComponent(Color.BLACK,
-                    new Vector2d(9, 9),
-                    new Vector2d(9, -9),
-                    new Vector2d(-9, -9),
-                    new Vector2d(-9, 9));
+            RobotComponent cp = new RobotComponent.BasicCircle(Color.BLACK, Math.sqrt(18 * 18 + 16 * 16) / 2);
+            RobotComponent cp2 = new RobotComponent.BasicRectangle(18, 16);
 
             RobotPropertyInfo properties = new RobotPropertyInfo();
             Trajectory traj = properties.constructTrajectoryBuilder(new Pose2d(0, 0, Math.PI / 2), Math.PI / 2)
@@ -60,6 +57,11 @@ public class Main {
             Stroke pathStroke = new BasicStroke(3);
 
             double currentTime = 0;
+
+            @Override
+            public void init() {
+
+            }
 
             @Override
             public void lateInit() {
@@ -82,6 +84,7 @@ public class Main {
 
                 CanvasRenderer.drawPose(traj.get(TimelinePlayer.getCurrentTime()));
                 cp.render(Matrix3x3.transform(traj.get(TimelinePlayer.getCurrentTime())));
+                cp2.render(Matrix3x3.transform(traj.get(TimelinePlayer.getCurrentTime())));
             }
         });
 

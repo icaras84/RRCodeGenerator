@@ -197,6 +197,21 @@ public class CanvasRenderer {
         );
     }
 
+    public static void fillCircle(Vector2d pos, double radius){
+        Vector2d o = viewTransform.times(pos);
+        radius *= scalingFactor;
+        double centeredX = o.getX() - radius;
+        double centeredY = o.getY() - radius;
+        double diameter = radius * 2;
+
+        g.fillOval(
+                (int) centeredX,
+                (int) centeredY,
+                (int) diameter,
+                (int) diameter
+        );
+    }
+
     public static void drawTrajectory(Trajectory op){
         drawSampledPath(op.getPath());
     }

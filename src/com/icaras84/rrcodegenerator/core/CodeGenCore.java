@@ -88,52 +88,71 @@ public class CodeGenCore {
         Timer renderDelay = new Timer((int) FIXED_UPDATE_THRESH_MS, e -> renderTask.reset()); //tab switching has some intrinsic delay in rendering
         renderDelay.setRepeats(true);
 
+        /*
         Timer fixedUpdateDelay = new Timer((int) FIXED_UPDATE_THRESH_MS, e -> fixedUpdateTask.run());
         fixedUpdateDelay.setRepeats(true);
-        fixedUpdateDelay.start();
 
+         */
 
         OutputPanel.TAB_SELECTION lastSelection, currentSelection = null;
         boolean lastResizeState, currResizeState = true;
 
+        for (CoreUpdate update : updates) {
+            update.init();
+        }
+
         while (!swingUiCreated){}
+
+        //fixedUpdateDelay.start();
 
         for (CoreUpdate update : updates) {
             update.lateInit();
         }
 
+        long curr = System.currentTimeMillis(), last = System.currentTimeMillis(),
+                delta,
+                processed = 0L;
+
         while (!pendingProgramExit){
             pendingProgramExit = MainWindow.isClosing();
+            last = curr;
+            curr = System.currentTimeMillis();
+            delta = curr - last;
+
+            processed += delta;
+
+            while (processed >= FIXED_UPDATE_THRESH_MS){
+                fixedUpdate(FIXED_UPDATE_THRESH_MS, FIXED_UPDATE_THRESH_SEC);
+                processed -= FIXED_UPDATE_THRESH_MS;
+            }
 
             //canRender controls if OutputPanel has properly been created
             //Tab Selection is to prevent the GPU drawing over other tabs' content, consequently optimizing it
+            lastSelection = currentSelection;
+            currentSelection = OutputPanel.getTabSelection();
 
+            lastResizeState = currResizeState;
+            currResizeState = MainWindow.isResizing();
 
-                lastSelection = currentSelection;
-                currentSelection = OutputPanel.getTabSelection();
-
-                lastResizeState = currResizeState;
-                currResizeState = MainWindow.isResizing();
-
-                if (currentSelection == OutputPanel.TAB_SELECTION.VIEWPORT && !MainWindow.isResizing()){
-                    if (OutputPanelLogic.queuedRender){
-                        renderTask.reset();
-                    } else if (lastSelection != currentSelection){
-                        renderDelay.restart();
-                    }
-                } else if (currentSelection != OutputPanel.TAB_SELECTION.VIEWPORT && !MainWindow.isResizing()) {
-                    renderDelay.stop();
-                }
-
-                if (lastResizeState != currResizeState && currResizeState == !MainWindow.isResizing()){
+            if (currentSelection == OutputPanel.TAB_SELECTION.VIEWPORT && !MainWindow.isResizing()){
+                if (OutputPanelLogic.queuedRender){
                     renderTask.reset();
+                } else if (lastSelection != currentSelection){
+                    renderDelay.restart();
                 }
+            } else if (currentSelection != OutputPanel.TAB_SELECTION.VIEWPORT && !MainWindow.isResizing()) {
+                renderDelay.stop();
+            }
+
+            if (lastResizeState != currResizeState && currResizeState == !MainWindow.isResizing()){
+                renderTask.reset();
+            }
 
 
             renderTask.run();
         }
 
-        fixedUpdateDelay.stop();
+        //fixedUpdateDelay.stop();
         renderDelay.stop();
 
         dispose();
@@ -145,6 +164,7 @@ public class CodeGenCore {
         Graphics2D g = (Graphics2D) bs.getDrawGraphics();
         CanvasRenderer.updateViewMatrix(g);
         CanvasRenderer.clear();
+
         for (CoreUpdate update : updates) {
             update.render(g, fixedDeltaTimeMs, fixedDeltaTimeSec);
         }
