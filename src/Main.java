@@ -8,38 +8,15 @@ import com.icaras84.rrcodegenerator.core.ui.singleinstance.tools.ui.TimelinePlay
 import com.icaras84.rrcodegenerator.core.utils.maths.Matrix3x3;
 import com.icaras84.rrcodegenerator.core.utils.robot.RobotComponent;
 import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
+import com.icaras84.rrcodegenerator.core.utils.trajectory.trajectoryupdates.GeneralTrajectoryUpdate;
 
 import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
 
-        /*
-        TrajectoryInfo trajectoryInfo = new TrajectoryInfo();
-        EndPoseInfo p1 = new EndPoseInfo(trajectoryInfo);
-        p1.setEndPose(new Pose2d(30, 30, 0));
-        p1.setPathType(EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.lineToConstantHeading);
-        EndPoseInfo p2 = new EndPoseInfo(trajectoryInfo);
-        p2.setEndPose(new Pose2d(40, 40, Math.PI / 4));
-        p2.setPathType(EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.splineToSplineHeading);
-
-        Gson g = (new GsonBuilder())
-                .setPrettyPrinting()
-                .create();
-        String jsonOutput = g.toJson(trajectoryInfo);
-        System.out.println(jsonOutput);
-        System.out.println();
-
-        Gson g2 = (new GsonBuilder())
-                .setPrettyPrinting()
-                .create();
-        TrajectoryInfo info = g2.fromJson(jsonOutput, TrajectoryInfo.class);
-        info.revalidate();
-        //info.delete(1);
-        System.out.println(g.toJson(info));
-
-        */
         CodeGenCore.initUpdateList();
+
 
         //demonstrate trajectory rendering
         CodeGenCore.submitUpdatable(new CoreUpdate() {
@@ -87,6 +64,10 @@ public class Main {
                 cp2.render(Matrix3x3.transform(traj.get(TimelinePlayer.getCurrentTime())));
             }
         });
+
+
+
+        //CodeGenCore.submitUpdatable(new GeneralTrajectoryUpdate());
 
         CodeGenCore.run();
     }

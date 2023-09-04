@@ -213,7 +213,9 @@ public class CanvasRenderer {
     }
 
     public static void drawTrajectory(Trajectory op){
-        drawSampledPath(op.getPath());
+        if (op != null) {
+            drawSampledPath(op.getPath());
+        }
     }
 
     public static void setColor(Color strokeColor){

@@ -6,9 +6,9 @@ import com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer.CanvasRender
 import com.icaras84.rrcodegenerator.core.utils.maths.Matrix3x3;
 
 import java.awt.*;
+import java.util.Vector;
 
 public class RobotComponent {
-
     public static class BasicRectangle extends RobotComponent{
         private Vector2d topRight, topLeft, bottomRight, bottomLeft;
         public BasicRectangle(int sideLength1, int sideLength2){
@@ -50,7 +50,6 @@ public class RobotComponent {
             return bottomLeft;
         }
     }
-
     public static class BasicCircle extends RobotComponent{
 
         private double radius;
@@ -82,6 +81,28 @@ public class RobotComponent {
 
         public void setRadius(double radius) {
             this.radius = radius;
+        }
+    }
+    public static class ComplexComponent extends RobotComponent{
+        private Vector<RobotComponent> subComponents;
+        public ComplexComponent(){
+            subComponents = new Vector<>();
+            setTransform(Matrix3x3.IDENTITY);
+        }
+
+        @Override
+        public void render(Matrix3x3 parentTransform) {
+            for (RobotComponent part: subComponents) {
+                part.render(parentTransform.times(getTransform()));
+            }
+        }
+
+        public void add(RobotComponent component){
+            subComponents.add(component);
+        }
+
+        public void remove(RobotComponent component){
+            subComponents.add(component);
         }
     }
 

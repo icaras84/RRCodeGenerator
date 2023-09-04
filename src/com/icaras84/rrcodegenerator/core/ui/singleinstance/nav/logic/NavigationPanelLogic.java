@@ -10,25 +10,32 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class NavigationPanelLogic {
 
-    private static class TrajectoryItems{
+
+
+    public static class TrajectoryItems{
         public TrajectoryEditorPanel editor;
+        public TrajectoryInfo validBuild;
         public int idx;
 
-        public TrajectoryItems(TrajectoryEditorPanel editorPanel, int idx) {
+        public TrajectoryItems(TrajectoryEditorPanel editorPanel, TrajectoryInfo validBuild, int idx) {
             this.editor = editorPanel;
+            this.validBuild = validBuild;
             this.idx = idx;
         }
     }
 
     @SuppressWarnings("all")
-    public static ConcurrentHashMap<TrajectoryInfo, TrajectoryItems> trackedTrajectoryInfo;
+    private static ConcurrentHashMap<TrajectoryInfo, TrajectoryItems> trackedTrajectoryInfo;
+    private static volatile TrajectoryItems currentInfo;
 
     public static void init(){
         trackedTrajectoryInfo = new ConcurrentHashMap<>();
+        currentInfo = null;
     }
 
     public static void handleMouseSelection(JList<TrajectoryInfo> srcList, int idx){
         if (idx > -1) {
+            currentInfo = trackedTrajectoryInfo.get(srcList.getModel().getElementAt(idx));
             TrajectoryEditorPanel trajEditor = trackedTrajectoryInfo.get(srcList.getModel().getElementAt(idx)).editor;
             TrajectoryEditorPanel.swapEditors(trajEditor);
         }
@@ -38,7 +45,7 @@ public class NavigationPanelLogic {
         TrajectoryEditorPanel editorPanel = new TrajectoryEditorPanel();
         listModel.addElement(editorPanel.getInfo());
         int idx = listModel.indexOf(editorPanel.getInfo());
-        trackedTrajectoryInfo.put(editorPanel.getInfo(), new TrajectoryItems(editorPanel, idx));
+        trackedTrajectoryInfo.put(editorPanel.getInfo(), new TrajectoryItems(editorPanel, null, idx));
 
         updateTrajectoryIndices(listModel);
     }
@@ -77,5 +84,9 @@ public class NavigationPanelLogic {
 
     public Vector<TrajectoryInfo> getAllTrajectoryInformation(){
         return new Vector<>(trackedTrajectoryInfo.keySet());
+    }
+
+    public static TrajectoryItems getCurrentTrajectoryItems() {
+        return currentInfo;
     }
 }

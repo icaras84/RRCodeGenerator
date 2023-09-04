@@ -1,6 +1,9 @@
 package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
 
 import java.util.Arrays;
 import java.util.Vector;
@@ -10,8 +13,9 @@ public class TrajectoryInfo {
 
 
     private String trajectoryName;
-    private double startX, startY, startHeading;
+    private double startX, startY, startHeading, startTangent;
     private Vector<EndPoseInfo> endPoses;
+    private transient boolean isValid; //doesn't need to be serialized
 
     public TrajectoryInfo(){
         trajectoryName = "Empty";
@@ -76,6 +80,14 @@ public class TrajectoryInfo {
         this.startHeading = startHeading;
     }
 
+    public double getStartTangent() {
+        return startTangent;
+    }
+
+    public void setStartTangent(double startTangent) {
+        this.startTangent = startTangent;
+    }
+
     public Pose2d getStartPose(){
         return new Pose2d(startX, startY, startHeading);
     }
@@ -106,6 +118,14 @@ public class TrajectoryInfo {
         endPoses.set(n, poseInfo);
     }
 
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public void setValid(boolean valid) {
+        isValid = valid;
+    }
+
     public String createCodeString(){
         StringBuilder output = new StringBuilder();
 
@@ -114,5 +134,15 @@ public class TrajectoryInfo {
 
     public String toString(){
         return trajectoryName;
+    }
+
+    public Trajectory toTrajectory(RobotPropertyInfo robotPropertyInfo){
+        TrajectoryBuilder builder = robotPropertyInfo.constructTrajectoryBuilder(getStartPose(), startTangent);
+        for (EndPoseInfo segment : endPoses) {segment.toSegment(builder, robotPropertyInfo);}
+        if (!endPoses.isEmpty() && isValid) {
+            return builder.build();
+        } else {
+            return null;
+        }
     }
 }

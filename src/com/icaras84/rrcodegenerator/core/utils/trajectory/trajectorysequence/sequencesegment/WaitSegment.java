@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.trajectorycreation.trajectorysequence.sequencesegment;
+package com.icaras84.rrcodegenerator.core.utils.trajectory.trajectorysequence.sequencesegment;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker;

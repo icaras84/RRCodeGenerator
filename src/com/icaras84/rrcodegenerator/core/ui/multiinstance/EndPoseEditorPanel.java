@@ -140,6 +140,28 @@ public class EndPoseEditorPanel extends JPanel {
         this.add(accelerationEditor, gbc);
     }
 
+    public void loadPose(EndPoseInfo loadSegment){
+        EndPoseInfo.TRAJECTORY_SEGMENT_TYPE loadedType = loadSegment.getPathType();
+        pathTypeBox.setSelectedIndex(
+                loadedType == EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.lineTo ? 0 :
+                        loadedType == EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.lineToConstantHeading ? 1 :
+                                loadedType == EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.lineToLinearHeading ? 2 :
+                                        loadedType == EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.lineToSplineHeading ? 3 :
+                                                loadedType == EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.splineTo ? 4 :
+                                                        loadedType == EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.splineToConstantHeading ? 5 :
+                                                                loadedType == EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.splineToLinearHeading ? 6 : 7
+        );
+        pathType = loadedType;
+
+        poseEditor.setPose(loadSegment.getEndPose());
+        tangentEditor.setValue(loadSegment.getSplineTangent());
+
+        velocityEditor.setValue(loadSegment.getVelConstraint());
+        accelerationEditor.setValue(loadSegment.getAccelConstraint());
+
+        info.softCopy(loadSegment);
+    }
+
     private void updateTangentBoxStatus(ItemEvent e){
         pathType = (EndPoseInfo.TRAJECTORY_SEGMENT_TYPE) pathTypeBox.getSelectedItem();
         info.setPathType(pathType);

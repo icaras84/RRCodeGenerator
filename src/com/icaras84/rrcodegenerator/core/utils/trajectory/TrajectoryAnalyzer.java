@@ -5,87 +5,31 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.icaras84.rrcodegenerator.core.utils.info.EndPoseInfo;
 import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
 
-import java.util.Stack;
 import java.util.Vector;
 
 public class TrajectoryAnalyzer {
-    private static class Analysis{
-        private TrajectoryInfo trajectoryInfo;
-        private Stack<Integer> problemIndices;
-        private boolean solved;
+    private static class TrajSegment{
+        private EndPoseInfo previousPose, middlePose, nextPose;
 
-        public Analysis(TrajectoryInfo info, Stack<Integer> problems) {
-            this.trajectoryInfo = info;
-            this.problemIndices = problems;
+        public TrajSegment(EndPoseInfo previousPose, EndPoseInfo middlePose, EndPoseInfo nextPose) {
+            this.previousPose = previousPose;
+            this.middlePose = middlePose;
+            this.nextPose = nextPose;
         }
 
-        public TrajectoryInfo getTrajectoryInfo() {
-            return trajectoryInfo;
+        public TrajSegment(TrajSegment toCopy){
+            this.previousPose = new EndPoseInfo(toCopy.previousPose);
+            this.middlePose = new EndPoseInfo(toCopy.middlePose);
+            this.nextPose = new EndPoseInfo(toCopy.nextPose);
         }
 
-        public void setTrajectoryInfo(TrajectoryInfo trajectoryInfo) {
-            this.trajectoryInfo = trajectoryInfo;
+        public boolean isTrajectoryBeginning(){
+            return previousPose == null;
         }
 
-        public Stack<Integer> getProblemIndices() {
-            return problemIndices;
+        public boolean isTrajectoryEnding(){
+            return nextPose == null;
         }
-
-        public void setProblemIndices(Stack<Integer> problemIndices) {
-            this.problemIndices = problemIndices;
-        }
-
-        public boolean isSolved() {
-            return solved;
-        }
-
-        public void setSolved(boolean solved) {
-            this.solved = solved;
-        }
-
-        public boolean hasTrajectory(TrajectoryInfo info){
-            return trajectoryInfo == info || trajectoryInfo.equals(info);
-        }
-    }
-
-    private TrajectoryAnalyzer(){}
-
-    private static Vector<Analysis> analyzedTrajectories = new Vector<>();
-
-    public synchronized static void analyze(TrajectoryInfo trajectory){
-        Stack<Integer> problems = new Stack<>();
-        int endPoseCount = trajectory.getEndPoseBufferLength();
-
-        EndPoseInfo current, next;
-        for (int i = 0; i < endPoseCount - 1; i++) {
-            current = trajectory.getEndPose(i);
-            next = trajectory.getEndPose(i + 1);
-
-            if (isContinuityIssue(current, next)) problems.push(i);
-        }
-
-        analyzedTrajectories.add(new Analysis(trajectory, problems));
-    }
-
-    public synchronized static Analysis search(TrajectoryInfo info){
-        return (Analysis) analyzedTrajectories.stream().filter((analysis -> analysis.hasTrajectory(info))).toArray()[0];
-    }
-
-    public static boolean isContinuityIssue(EndPoseInfo currentPose, EndPoseInfo nextPose){
-        Pose2d currentPoseTangent = new Pose2d(
-                currentPose.getX(),
-                currentPose.getY(),
-                pathTypeIsSpline(currentPose.getPathType()) ?
-                        currentPose.getSplineTangent() : currentPose.getHeading());
-
-        Vector2d nextPoseDir = new Vector2d(
-                nextPose.getX() - currentPose.getX(),
-                nextPose.getY() - currentPose.getY())
-                .div(currentPoseTangent.vec().distTo(nextPose.getEndPose().vec()));
-
-        float tangentialDirection = (float) nextPoseDir.dot(currentPoseTangent.headingVec());
-
-        return tangentialDirection != 1f;
     }
 
     private static boolean pathTypeIsSpline(EndPoseInfo.TRAJECTORY_SEGMENT_TYPE trajectoryType){

@@ -1,4 +1,4 @@
-package com.icaras84.rrcodegenerator.core.trajectorycreation.trajectorysequence;
+package com.icaras84.rrcodegenerator.core.utils.trajectory.trajectorysequence;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -10,10 +10,10 @@ import com.acmerobotics.roadrunner.trajectory.*;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.Angle;
-import com.icaras84.rrcodegenerator.core.trajectorycreation.trajectorysequence.sequencesegment.SequenceSegment;
-import com.icaras84.rrcodegenerator.core.trajectorycreation.trajectorysequence.sequencesegment.TrajectorySegment;
-import com.icaras84.rrcodegenerator.core.trajectorycreation.trajectorysequence.sequencesegment.TurnSegment;
-import com.icaras84.rrcodegenerator.core.trajectorycreation.trajectorysequence.sequencesegment.WaitSegment;
+import com.icaras84.rrcodegenerator.core.utils.trajectory.trajectorysequence.sequencesegment.SequenceSegment;
+import com.icaras84.rrcodegenerator.core.utils.trajectory.trajectorysequence.sequencesegment.TrajectorySegment;
+import com.icaras84.rrcodegenerator.core.utils.trajectory.trajectorysequence.sequencesegment.TurnSegment;
+import com.icaras84.rrcodegenerator.core.utils.trajectory.trajectorysequence.sequencesegment.WaitSegment;
 
 
 import java.util.ArrayList;

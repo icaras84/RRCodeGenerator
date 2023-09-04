@@ -1,7 +1,10 @@
 package com.icaras84.rrcodegenerator.core.utils.info;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.tabs.logic.SettingsLogic;
+import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
 
 public class EndPoseInfo {
     public enum TRAJECTORY_SEGMENT_TYPE {
@@ -22,12 +25,28 @@ public class EndPoseInfo {
     private double velConstraint;
     private double accelConstraint;
 
-    public EndPoseInfo(TrajectoryInfo mainTrajectory) {
+    public EndPoseInfo(){
         pathType = TRAJECTORY_SEGMENT_TYPE.splineTo;
+    }
+
+    public EndPoseInfo(TrajectoryInfo mainTrajectory) {
+        this();
         add(mainTrajectory);
     }
 
     public EndPoseInfo(EndPoseInfo poseInfo){
+        softCopy(poseInfo);
+    }
+
+    public EndPoseInfo(Pose2d endPose, double splineTangent, boolean isUsingMovementConstraints, double velConstraint, double accelConstraint) {
+        this.setEndPose(endPose);
+        this.splineTangent = splineTangent;
+        this.isUsingMovementConstraints = isUsingMovementConstraints;
+        this.velConstraint = velConstraint;
+        this.accelConstraint = accelConstraint;
+    }
+
+    public void softCopy(EndPoseInfo poseInfo){
         this.pathType = poseInfo.pathType;
         setEndPose(poseInfo.getEndPose());
         this.isUsingMovementConstraints = poseInfo.isUsingMovementConstraints;
@@ -155,5 +174,63 @@ public class EndPoseInfo {
 
         output.append(")");
         return output.toString();
+    }
+
+    public void toSegment(TrajectoryBuilder builder, RobotPropertyInfo properties){
+        if (isUsingMovementConstraints) {
+            switch (pathType) {
+                case lineTo:
+                    builder.lineTo(new Vector2d(x, y), properties.getMaxVelConstraint(velConstraint), properties.getMaxAccelConstraint(accelConstraint));
+                    break;
+                case lineToConstantHeading:
+                    builder.lineToConstantHeading(new Vector2d(x, y), properties.getMaxVelConstraint(velConstraint), properties.getMaxAccelConstraint(accelConstraint));
+                    break;
+                case lineToLinearHeading:
+                    builder.lineToLinearHeading(new Pose2d(x, y, heading), properties.getMaxVelConstraint(velConstraint), properties.getMaxAccelConstraint(accelConstraint));
+                    break;
+                case lineToSplineHeading:
+                    builder.lineToSplineHeading(new Pose2d(x, y, heading), properties.getMaxVelConstraint(velConstraint), properties.getMaxAccelConstraint(accelConstraint));
+                    break;
+                case splineTo:
+                    builder.splineTo(new Vector2d(x, y), splineTangent, properties.getMaxVelConstraint(velConstraint), properties.getMaxAccelConstraint(accelConstraint));
+                    break;
+                case splineToConstantHeading:
+                    builder.splineToConstantHeading(new Vector2d(x, y), splineTangent, properties.getMaxVelConstraint(velConstraint), properties.getMaxAccelConstraint(accelConstraint));
+                    break;
+                case splineToLinearHeading:
+                    builder.splineToLinearHeading(new Pose2d(x, y, heading), splineTangent, properties.getMaxVelConstraint(velConstraint), properties.getMaxAccelConstraint(accelConstraint));
+                    break;
+                case splineToSplineHeading:
+                    builder.splineToSplineHeading(new Pose2d(x, y, heading), splineTangent, properties.getMaxVelConstraint(velConstraint), properties.getMaxAccelConstraint(accelConstraint));
+                    break;
+            }
+        } else {
+            switch (pathType) {
+                case lineTo:
+                    builder.lineTo(new Vector2d(x, y));
+                    break;
+                case lineToConstantHeading:
+                    builder.lineToConstantHeading(new Vector2d(x, y));
+                    break;
+                case lineToLinearHeading:
+                    builder.lineToLinearHeading(new Pose2d(x, y, heading));
+                    break;
+                case lineToSplineHeading:
+                    builder.lineToSplineHeading(new Pose2d(x, y, heading));
+                    break;
+                case splineTo:
+                    builder.splineTo(new Vector2d(x, y), splineTangent);
+                    break;
+                case splineToConstantHeading:
+                    builder.splineToConstantHeading(new Vector2d(x, y), splineTangent);
+                    break;
+                case splineToLinearHeading:
+                    builder.splineToLinearHeading(new Pose2d(x, y, heading), splineTangent);
+                    break;
+                case splineToSplineHeading:
+                    builder.splineToSplineHeading(new Pose2d(x, y, heading), splineTangent);
+                    break;
+            }
+        }
     }
 }
