@@ -162,6 +162,11 @@ public class EndPoseEditorPanel extends JPanel {
         info.softCopy(loadSegment);
     }
 
+    public void loadPose2(EndPoseInfo loadSegment){
+        loadPose(loadSegment);
+        info = loadSegment;
+    }
+
     private void updateTangentBoxStatus(ItemEvent e){
         pathType = (EndPoseInfo.TRAJECTORY_SEGMENT_TYPE) pathTypeBox.getSelectedItem();
         info.setPathType(pathType);
