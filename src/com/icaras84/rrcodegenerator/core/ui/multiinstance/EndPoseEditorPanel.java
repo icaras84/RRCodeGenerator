@@ -74,7 +74,7 @@ public class EndPoseEditorPanel extends JPanel {
         splineTangentAsHeading.addItemListener(this::updateSplineTangentHandling);
         splineTangentAsHeading.setEnabled(false);
 
-        tangentLabel = new JLabel(" Spline Tangent:");
+        tangentLabel = new JLabel(" Spline Tangent (DEG):");
         tangentEditor = GeneralUtils.createRealNumberTextField();
         tangentEditor.addPropertyChangeListener("value", this::updateSplineTangentValue);
         tangentEditor.setEnabled(false);
@@ -154,7 +154,7 @@ public class EndPoseEditorPanel extends JPanel {
         pathType = loadedType;
 
         poseEditor.setPose(loadSegment.getEndPose());
-        tangentEditor.setValue(loadSegment.getSplineTangent());
+        tangentEditor.setValue(Math.toDegrees(loadSegment.getSplineTangent()));
 
         velocityEditor.setValue(loadSegment.getVelConstraint());
         accelerationEditor.setValue(loadSegment.getAccelConstraint());
@@ -195,13 +195,13 @@ public class EndPoseEditorPanel extends JPanel {
             info.setSplineTangent(poseEditor.getPose2d().getHeading());
         } else {
             tangentEditor.setEnabled(isTangentEnabled);
-            info.setSplineTangent(((Number) tangentEditor.getValue()).doubleValue());
+            info.setSplineTangent(Math.toRadians(((Number) tangentEditor.getValue()).doubleValue()));
         }
     }
 
     private void updateSplineTangentValue(PropertyChangeEvent e){
         if (tangentEditor.isEnabled())
-            info.setSplineTangent(((Number) tangentEditor.getValue()).doubleValue());
+            info.setSplineTangent(Math.toRadians(((Number) tangentEditor.getValue()).doubleValue()));
     }
 
     private void updateConstraintBoxStatus(ItemEvent e){

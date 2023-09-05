@@ -97,7 +97,7 @@ public class Pose2dJPanel extends JPanel{
     public void setPose(Pose2d pose){
         xTextBox.setValue(pose.getX());
         yTextBox.setValue(pose.getY());
-        headingTextBox.setValue(pose.getHeading());
+        headingTextBox.setValue(Math.toDegrees(pose.getHeading()));
     }
 
     public void setEditorTitle(String nEditorTitle){

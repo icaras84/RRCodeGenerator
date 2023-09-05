@@ -7,6 +7,7 @@ import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
 
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.function.Supplier;
 
 public class TrajectoryInfo {
 
@@ -24,6 +25,10 @@ public class TrajectoryInfo {
 
     public void add(EndPoseInfo endPoseInfo){
         endPoses.add(endPoseInfo);
+    }
+
+    public void add(Supplier<EndPoseInfo> endPoseInfoSupplier){
+        endPoses.add(endPoseInfoSupplier.get());
     }
 
     public void delete(EndPoseInfo endPoseInfo){

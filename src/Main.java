@@ -3,14 +3,19 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.icaras84.rrcodegenerator.core.CodeGenCore;
 import com.icaras84.rrcodegenerator.core.CoreUpdate;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.ui.NavigationPanel;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer.CanvasRenderer;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.tools.ui.TimelinePlayer;
+import com.icaras84.rrcodegenerator.core.utils.info.EndPoseInfo;
+import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
 import com.icaras84.rrcodegenerator.core.utils.maths.Matrix3x3;
 import com.icaras84.rrcodegenerator.core.utils.robot.RobotComponent;
 import com.icaras84.rrcodegenerator.core.utils.robot.RobotPropertyInfo;
 import com.icaras84.rrcodegenerator.core.utils.trajectory.trajectoryupdates.GeneralTrajectoryUpdate;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,6 +35,28 @@ public class Main {
                     .splineToSplineHeading(new Pose2d(-30, 45, Math.PI), Math.PI)
                     .build();
 
+            TrajectoryInfo trajectoryInfo = new TrajectoryInfo();
+
+            {
+                trajectoryInfo.setStartPose(new Pose2d(0, 0, Math.PI / 2));
+                trajectoryInfo.setStartTangent(Math.PI / 2);
+                trajectoryInfo.add(() -> {
+                    EndPoseInfo output = new EndPoseInfo();
+                    output.setPathType(EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.splineTo);
+                    output.setEndPose(new Pose2d(30, 30));
+                    output.setSplineTangent(Math.PI * 0.6);
+                    output.setUsingMovementConstraints(false);
+                    return output;
+                });
+                trajectoryInfo.add(() -> {
+                    EndPoseInfo output = new EndPoseInfo();
+                    output.setPathType(EndPoseInfo.TRAJECTORY_SEGMENT_TYPE.splineToSplineHeading);
+                    output.setEndPose(new Pose2d(-30, 45, Math.PI));
+                    output.setSplineTangent(Math.PI);
+                    return output;
+                });
+            }
+
             Stroke normalStroke = new BasicStroke(1);
             Stroke pathStroke = new BasicStroke(3);
 
@@ -43,6 +70,8 @@ public class Main {
             @Override
             public void lateInit() {
                 TimelinePlayer.setMaxMs(traj.duration() * 1000d);
+
+                NavigationPanel.loadTrajectory(trajectoryInfo);
             }
 
             @Override

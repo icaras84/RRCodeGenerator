@@ -7,6 +7,7 @@ import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
 import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.util.Vector;
 
@@ -22,8 +23,12 @@ public class TrajectoryEditorPanel extends JPanel {
     private JToolBar toolBar;
     private JButton addNewEditor;
 
-    private Pose2dJPanel startPoseEditor;
     private JFormattedTextField trajNameEditor;
+    private Pose2dJPanel startPoseEditor;
+
+    private JPanel tangentPanel;
+    private JLabel tangentLabel;
+    private JFormattedTextField tangentEditor;
 
     private JScrollPane scrolledView;
     private JPanel editorPane;
@@ -32,7 +37,7 @@ public class TrajectoryEditorPanel extends JPanel {
         super();
         info = new TrajectoryInfo();
         init();
-        arrange();
+
 
         MainWindow.submitResizeOperation(this::resize);
     }
@@ -53,6 +58,7 @@ public class TrajectoryEditorPanel extends JPanel {
         startPoseEditor.setMinimumSize(startPoseEditor.getSize());
         startPoseEditor.setMaximumSize(startPoseEditor.getSize());
         startPoseEditor.setBorder(null);
+        startPoseEditor.addTextBoxPropertyChangeListeners("value", this::setTrajPose);
 
         trajNameEditor = new JFormattedTextField();
         trajNameEditor.setValue(info.getTrajectoryName());
@@ -60,6 +66,13 @@ public class TrajectoryEditorPanel extends JPanel {
         trajNameEditor.addPropertyChangeListener("value", this::setTrajName);
         trajNameEditor.setSize(PANEL_WIDTH / 2, 20);
         trajNameEditor.setPreferredSize(trajNameEditor.getSize());
+
+        tangentPanel = new JPanel();
+        tangentPanel.setLayout(new GridBagLayout());
+        //GeneralUtils.ensureJComponentSize(tangentPanel, PANEL_WIDTH, toolbarHeight);
+        tangentLabel = new JLabel("Start Tangent: ");
+        tangentEditor = GeneralUtils.createRealNumberTextField();
+        tangentEditor.addPropertyChangeListener("value", this::setStartTangent);
 
         editorPane = new JPanel();
         editorPane.setLayout(new BoxLayout(editorPane, BoxLayout.Y_AXIS));
@@ -71,6 +84,7 @@ public class TrajectoryEditorPanel extends JPanel {
         scrolledView.setViewportView(editorPane);
         scrolledView.getVerticalScrollBar().setUnitIncrement(5);
 
+        arrange();
         resize();
     }
 
@@ -83,6 +97,15 @@ public class TrajectoryEditorPanel extends JPanel {
         this.add(toolBar);
 
         this.add(startPoseEditor);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        tangentPanel.add(tangentLabel, gbc);
+        gbc.gridx = 1;
+        tangentPanel.add(tangentEditor, gbc);
+
+        this.add(tangentPanel);
 
         this.add(scrolledView);
 
@@ -97,11 +120,39 @@ public class TrajectoryEditorPanel extends JPanel {
         this.setPreferredSize(this.getSize());
     }
 
+    public void load(TrajectoryInfo nTraj){
+        startPoseEditor.setPose(new Pose2d(nTraj.getStartX(), nTraj.getStartY(), nTraj.getStartHeading()));
+        tangentEditor.setValue(Math.toDegrees(nTraj.getStartTangent()));
+        info = nTraj;
+
+        loadPoseEditors(nTraj);
+    }
+
+    private void loadPoseEditors(TrajectoryInfo trajectoryInfo){
+        int len = trajectoryInfo.getEndPoseBufferLength();
+        if (endPoseEditors.size() != len){
+            endPoseEditors.forEach(EndPoseEditorPanel::requestDelete);
+            for (int i = 0; i < len; i++) addNewEndPoseEditor();
+        }
+
+        for (int i = 0; i < len; i++) {
+            endPoseEditors.get(i).loadPose2(trajectoryInfo.getEndPose(i));
+        }
+    }
+
     public void addNewEndPoseEditor(){
         EndPoseEditorPanel endPoseEditorPanel = new EndPoseEditorPanel(this);
         endPoseEditors.add(endPoseEditorPanel);
         editorPane.add(endPoseEditorPanel);
         updateScrollPane();
+    }
+
+    private void setTrajPose(PropertyChangeEvent evt){
+        info.setStartPose(startPoseEditor.getPose2d());
+    }
+
+    private void setStartTangent(PropertyChangeEvent evt){
+        info.setStartTangent(Math.toRadians(((Number) tangentEditor.getValue()).doubleValue()));
     }
 
     private void setTrajName(PropertyChangeEvent evt){
@@ -111,7 +162,7 @@ public class TrajectoryEditorPanel extends JPanel {
 
     public static String cleanTrajName(String trajName){
         char[] output = trajName.trim().toCharArray();
-        if (output.length == 0) return "_";
+        if (output.length == 0) return "_defaultName"; //there is a default keyword in java, so start with an underscore
         if (Character.isDigit(output[0])) output[0] = '_';
         for (int i = 0; i < output.length; i++) {
             if (GeneralUtils.isSymbol(output[i]) && output[i] != '_') output[i] = '_';

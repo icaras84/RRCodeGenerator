@@ -84,6 +84,10 @@ public class NavigationPanel {
         arrange();
     }
 
+    public static void loadTrajectory(TrajectoryInfo info){
+        NavigationPanelLogic.loadTrajectory(listModel, info);
+    }
+
     public static void arrange(){
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 

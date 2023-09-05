@@ -50,6 +50,16 @@ public class NavigationPanelLogic {
         updateTrajectoryIndices(listModel);
     }
 
+    public static void loadTrajectory(DefaultListModel<TrajectoryInfo> listModel, TrajectoryInfo traj){
+        TrajectoryEditorPanel editorPanel = new TrajectoryEditorPanel();
+        editorPanel.load(traj);
+        listModel.addElement(traj);
+        int idx = listModel.indexOf(traj);
+        trackedTrajectoryInfo.put(traj, new TrajectoryItems(editorPanel, null, idx));
+
+        updateTrajectoryIndices(listModel);
+    }
+
     public static void createTrajectories(DefaultListModel<TrajectoryInfo> listModel, int count){
         for (int i = 0; i < count; i++) {
             createTrajectory(listModel);
