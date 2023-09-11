@@ -8,10 +8,7 @@ import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 
 public class OutputPanel{
 
@@ -67,6 +64,8 @@ public class OutputPanel{
         MainWindow.submitResizeOperation(OutputPanel::resize);
     }
 
+    public static double wheelVel = 0;
+
     private static void initCanvasPanel(){
         canvasPanel = new JPanel();
         canvasPanel.setLayout(new BorderLayout());
@@ -78,6 +77,7 @@ public class OutputPanel{
         );
 
         canvasPanel.add(mainCanvas, BorderLayout.CENTER);
+        canvasPanel.addMouseWheelListener(e -> wheelVel = e.getUnitsToScroll());
         mainCanvas.setBackground(Color.BLACK);
         canvasPanel.setBackground(Color.BLACK);
 

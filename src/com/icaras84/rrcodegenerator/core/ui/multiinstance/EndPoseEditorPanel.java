@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.icaras84.rrcodegenerator.core.utils.info.EndPoseInfo;
 import com.icaras84.rrcodegenerator.core.utils.GeneralUtils;
 import com.icaras84.rrcodegenerator.core.utils.extraui.Pose2dJPanel;
+import com.icaras84.rrcodegenerator.core.utils.trajectory.TrajectoryAnalyzer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,6 +70,7 @@ public class EndPoseEditorPanel extends JPanel {
 
         poseEditor = new Pose2dJPanel("Segment End Pose");
         poseEditor.addTextBoxPropertyChangeListeners("value", this::updatePose);
+        poseEditor.enableHeadingTextBox(false);
 
         splineTangentAsHeading = new JCheckBox("Tangent is heading");
         splineTangentAsHeading.addItemListener(this::updateSplineTangentHandling);
@@ -182,6 +184,13 @@ public class EndPoseEditorPanel extends JPanel {
                 splineTangentAsHeading.setEnabled(false);
                 isTangentEnabled = false;
         }
+
+        if (!TrajectoryAnalyzer.pathTypeHeadingChanges(pathType)){
+            poseEditor.enableHeadingTextBox(false);
+        } else {
+            poseEditor.enableHeadingTextBox(true);
+        }
+
         tangentEditor.setEnabled(isTangentEnabled);
     }
 

@@ -19,8 +19,19 @@ public class TrajectoryInfo {
     private transient boolean isValid; //doesn't need to be serialized
 
     public TrajectoryInfo(){
-        trajectoryName = "Empty";
+        trajectoryName = "_defaultName";
         endPoses = new Vector<>();
+    }
+
+    public TrajectoryInfo(TrajectoryInfo toCopy){
+        load(toCopy);
+    }
+
+    public void load(TrajectoryInfo toCopy){
+        setStartPose(toCopy.getStartPose());
+        startTangent = toCopy.startTangent;
+        trajectoryName = toCopy.trajectoryName;
+        endPoses = new Vector<>(toCopy.endPoses);
     }
 
     public void add(EndPoseInfo endPoseInfo){
@@ -131,7 +142,7 @@ public class TrajectoryInfo {
         isValid = valid;
     }
 
-    public String createCodeString(){
+    public String createCodeString(RobotPropertyInfo robotPropertyInfo){
         StringBuilder output = new StringBuilder();
 
         return output.toString();

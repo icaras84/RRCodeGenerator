@@ -2,6 +2,7 @@ package com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.logic;
 
 import com.icaras84.rrcodegenerator.core.ui.multiinstance.TrajectoryEditorPanel;
 import com.icaras84.rrcodegenerator.core.utils.info.TrajectoryInfo;
+import com.icaras84.rrcodegenerator.core.utils.trajectory.TrajectoryAnalyzer;
 
 import javax.swing.*;
 import java.util.Map;
@@ -26,16 +27,19 @@ public class NavigationPanelLogic {
 
     @SuppressWarnings("all")
     private static ConcurrentHashMap<TrajectoryInfo, TrajectoryItems> trackedTrajectoryInfo;
-    private static volatile TrajectoryItems currentInfo;
+    private static volatile TrajectoryInfo currentTrajectory;
+    private static volatile TrajectoryItems currentTrajectoryItems;
 
     public static void init(){
         trackedTrajectoryInfo = new ConcurrentHashMap<>();
-        currentInfo = null;
+        currentTrajectory = null;
+        currentTrajectoryItems = null;
     }
 
     public static void handleMouseSelection(JList<TrajectoryInfo> srcList, int idx){
         if (idx > -1) {
-            currentInfo = trackedTrajectoryInfo.get(srcList.getModel().getElementAt(idx));
+            currentTrajectory = srcList.getModel().getElementAt(idx);
+            currentTrajectoryItems = trackedTrajectoryInfo.get(currentTrajectory);
             TrajectoryEditorPanel trajEditor = trackedTrajectoryInfo.get(srcList.getModel().getElementAt(idx)).editor;
             TrajectoryEditorPanel.swapEditors(trajEditor);
         }
@@ -58,6 +62,12 @@ public class NavigationPanelLogic {
         trackedTrajectoryInfo.put(traj, new TrajectoryItems(editorPanel, null, idx));
 
         updateTrajectoryIndices(listModel);
+    }
+
+    public static void updateTrajectoryCurrentBuild(){
+        currentTrajectoryItems.validBuild = TrajectoryAnalyzer.fix(currentTrajectory);
+        currentTrajectory.load(currentTrajectoryItems.validBuild);
+        currentTrajectoryItems.editor.load(currentTrajectory);
     }
 
     public static void createTrajectories(DefaultListModel<TrajectoryInfo> listModel, int count){
@@ -97,6 +107,6 @@ public class NavigationPanelLogic {
     }
 
     public static TrajectoryItems getCurrentTrajectoryItems() {
-        return currentInfo;
+        return currentTrajectoryItems;
     }
 }

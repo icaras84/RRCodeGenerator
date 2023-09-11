@@ -4,6 +4,8 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.icaras84.rrcodegenerator.core.CodeGenCore;
 import com.icaras84.rrcodegenerator.core.CoreUpdate;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.nav.ui.NavigationPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.output.OutputPanel;
+import com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer.Camera2d;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.renderer.CanvasRenderer;
 import com.icaras84.rrcodegenerator.core.ui.singleinstance.tools.ui.TimelinePlayer;
 import com.icaras84.rrcodegenerator.core.utils.info.EndPoseInfo;
@@ -25,6 +27,8 @@ public class Main {
 
         //demonstrate trajectory rendering
         CodeGenCore.submitUpdatable(new CoreUpdate() {
+
+            Camera2d mainCamera =  new Camera2d();
 
             RobotComponent cp = new RobotComponent.BasicCircle(Color.BLACK, Math.sqrt(18 * 18 + 16 * 16) / 2);
             RobotComponent cp2 = new RobotComponent.BasicRectangle(18, 16);
@@ -64,7 +68,7 @@ public class Main {
 
             @Override
             public void init() {
-
+                CanvasRenderer.setCamera(mainCamera);
             }
 
             @Override
@@ -74,9 +78,19 @@ public class Main {
                 NavigationPanel.loadTrajectory(trajectoryInfo);
             }
 
+            double orbitAngle = 0;
+            double orbitVelocity = Math.toRadians(45);
+            double orbitDistance = 30;
+
             @Override
             public void fixedUpdate(float fixedDeltaTimeMs, float fixedDeltaTimeSec) {
-
+                /*
+                orbitAngle += orbitVelocity * fixedDeltaTimeSec;
+                mainCamera.setTranslation(Math.cos(orbitAngle) * orbitDistance, Math.sin(orbitAngle) * orbitDistance);
+                */
+                mainCamera.incrementZoom(OutputPanel.wheelVel * 0.1);
+                //System.out.println(mainCamera.getZoom());
+                OutputPanel.wheelVel = 0;
             }
 
             @Override

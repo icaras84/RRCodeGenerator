@@ -145,6 +145,26 @@ public class Pose2dJPanel extends JPanel{
         headingTextBox.addPropertyChangeListener(propertyName, propertyChangeListener);
     }
 
+    public void enableXTextBox(boolean toggle){
+        xTextBox.setEnabled(toggle);
+    }
+
+    public void enableYTextBox(boolean toggle){
+        yTextBox.setEnabled(toggle);
+    }
+
+    public void enableHeadingTextBox(boolean toggle){
+        headingTextBox.setEnabled(toggle);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        xTextBox.setEnabled(enabled);
+        yTextBox.setEnabled(enabled);
+        headingTextBox.setEnabled(enabled);
+        super.setEnabled(enabled);
+    }
+
     public String toString(){
         return "X: " + poseX + "\nY: " + poseY + "\nHeading (DEG): " + poseHeading;
     }

@@ -123,21 +123,28 @@ public class TrajectoryEditorPanel extends JPanel {
     public void load(TrajectoryInfo nTraj){
         startPoseEditor.setPose(new Pose2d(nTraj.getStartX(), nTraj.getStartY(), nTraj.getStartHeading()));
         tangentEditor.setValue(Math.toDegrees(nTraj.getStartTangent()));
+        info = new TrajectoryInfo(nTraj);
+
+        loadPoseEditors(info);
+    }
+
+    public void load2(TrajectoryInfo nTraj){
+        startPoseEditor.setPose(new Pose2d(nTraj.getStartX(), nTraj.getStartY(), nTraj.getStartHeading()));
+        tangentEditor.setValue(Math.toDegrees(nTraj.getStartTangent()));
         info = nTraj;
 
-        loadPoseEditors(nTraj);
+        loadPoseEditors(info);
     }
 
     private void loadPoseEditors(TrajectoryInfo trajectoryInfo){
         int len = trajectoryInfo.getEndPoseBufferLength();
-        if (endPoseEditors.size() != len){
-            endPoseEditors.forEach(EndPoseEditorPanel::requestDelete);
-            for (int i = 0; i < len; i++) addNewEndPoseEditor();
-        }
+        int formerLen = endPoseEditors.size();
 
-        for (int i = 0; i < len; i++) {
-            endPoseEditors.get(i).loadPose2(trajectoryInfo.getEndPose(i));
-        }
+        for (int i = 0; i < formerLen; i++) endPoseEditors.get(0).requestDelete();
+
+        for (int i = 0; i < len; i++) addNewEndPoseEditor();
+
+        for (int i = 0; i < len; i++) endPoseEditors.get(i).loadPose(trajectoryInfo.getEndPose(i));
     }
 
     public void addNewEndPoseEditor(){

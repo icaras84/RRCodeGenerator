@@ -24,6 +24,9 @@ public class CanvasRenderer {
     public static Vector2d CANVAS_FIELD_TL, CANVAS_FIELD_BR;
 
     private static Matrix3x3 viewTransform;
+    private static Camera2d camera;
+    private static Matrix3x3 mvpMatrix;
+    private static Matrix3x3 invertedView;
     private static double scalingFactor;
 
     private static Graphics2D g;
@@ -50,18 +53,24 @@ public class CanvasRenderer {
             viewTransform.m[0][1] = -scalingFactor;
             viewTransform.m[1][0] = -scalingFactor;
             viewTransform.m[1][1] = 0;
-
-            CANVAS_FIELD_TL = viewTransform.times(FIELD_HALF, FIELD_HALF);
-            CANVAS_FIELD_BR = viewTransform.times(-FIELD_HALF, -FIELD_HALF);
         } else {
             viewTransform.m[0][0] = scalingFactor;
             viewTransform.m[0][1] = 0;
             viewTransform.m[1][0] = 0;
             viewTransform.m[1][1] = -scalingFactor;
-
-            CANVAS_FIELD_TL = viewTransform.times(-FIELD_HALF, FIELD_HALF);
-            CANVAS_FIELD_BR = viewTransform.times(FIELD_HALF, -FIELD_HALF);
         }
+
+        mvpMatrix = viewTransform.times(camera.getMatrix());
+
+        if (rotatedField){
+            CANVAS_FIELD_TL = mvpMatrix.times(FIELD_HALF, FIELD_HALF);
+            CANVAS_FIELD_BR = mvpMatrix.times(-FIELD_HALF, -FIELD_HALF);
+        } else {
+            CANVAS_FIELD_TL = mvpMatrix.times(-FIELD_HALF, FIELD_HALF);
+            CANVAS_FIELD_BR = mvpMatrix.times(FIELD_HALF, -FIELD_HALF);
+        }
+
+        invertedView = viewTransform.inverted();
     }
 
     public static void clear(){
@@ -108,7 +117,7 @@ public class CanvasRenderer {
         int[] canvasY = new int[minimumPoints];
 
         for (int i = 0; i < minimumPoints; i++) {
-            Vector2d output = viewTransform.times(x[i], y[i]);
+            Vector2d output = mvpMatrix.times(x[i], y[i]);
             canvasX[i] = (int) output.getX();
             canvasY[i] = (int) output.getY();
         }
@@ -125,7 +134,7 @@ public class CanvasRenderer {
         int[] canvasY = new int[points.length + (fullPoly ? 1 : 0)];
 
         for (int i = 0; i < points.length; i++) {
-            Vector2d output = viewTransform.times(additionalTransform.times(points[i]));
+            Vector2d output = mvpMatrix.times(additionalTransform.times(points[i]));
             canvasX[i] = (int) output.getX();
             canvasY[i] = (int) output.getY();
         }
@@ -143,7 +152,7 @@ public class CanvasRenderer {
         int[] canvasY = new int[points.length];
 
         for (int i = 0; i < points.length; i++) {
-            Vector2d output = viewTransform.times(additionalTransform.times(points[i]));
+            Vector2d output = mvpMatrix.times(additionalTransform.times(points[i]));
             canvasX[i] = (int) output.getX();
             canvasY[i] = (int) output.getY();
         }
@@ -151,8 +160,8 @@ public class CanvasRenderer {
     }
 
     public static void drawLine(double x0, double y0, double x1, double y1){
-        Vector2d end1 = viewTransform.times(x0, y0);
-        Vector2d end2 = viewTransform.times(x1, y1);
+        Vector2d end1 = mvpMatrix.times(x0, y0);
+        Vector2d end2 = mvpMatrix.times(x1, y1);
         g.drawLine((int) end1.getX(), (int) end1.getY(), (int) end2.getX(), (int) end2.getY());
     }
 
@@ -183,8 +192,8 @@ public class CanvasRenderer {
     }
 
     public static void drawCircle(Vector2d pos, double radius){
-        Vector2d o = viewTransform.times(pos);
-        radius *= scalingFactor;
+        Vector2d o = mvpMatrix.times(pos);
+        radius *= scalingFactor * camera.getZoom();
         double centeredX = o.getX() - radius;
         double centeredY = o.getY() - radius;
         double diameter = radius * 2;
@@ -198,8 +207,8 @@ public class CanvasRenderer {
     }
 
     public static void fillCircle(Vector2d pos, double radius){
-        Vector2d o = viewTransform.times(pos);
-        radius *= scalingFactor;
+        Vector2d o = mvpMatrix.times(pos);
+        radius *= scalingFactor * camera.getZoom();
         double centeredX = o.getX() - radius;
         double centeredY = o.getY() - radius;
         double diameter = radius * 2;
@@ -224,5 +233,13 @@ public class CanvasRenderer {
 
     public static void setPenStroke(Stroke penStroke){
         g.setStroke(penStroke);
+    }
+
+    public static void setCamera(Camera2d camera){
+        CanvasRenderer.camera = camera;
+    }
+
+    public static Camera2d getCamera(){
+        return CanvasRenderer.camera;
     }
 }
